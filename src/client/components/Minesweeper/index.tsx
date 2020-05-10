@@ -19,6 +19,7 @@ type Props = {
   height: number;
   width: number;
   mines: number;
+  gameCount: number;
 };
 
 const Root = styled(Flex)`
@@ -30,14 +31,16 @@ const Root = styled(Flex)`
 
 type GameState = 'ready' | 'started' | 'won' | 'lost';
 
-const Minesweeper = ({ width, height, mines }: Props) => {
+const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
   const [boardData, setBoardData] = useState<CellData[][]>([[]]);
   const [gameState, setGameState] = useState<GameState>('ready');
   const [mineCount, setMineCount] = useState<number>(mines);
 
   useEffect(() => {
     setBoardData(initBoardData(height, width));
-  }, [width, height, mines]);
+    setGameState('ready');
+    setMineCount(mines);
+  }, [width, height, mines, gameCount]);
 
   const handleCellClick = (x: number, y: number) => {
     if (boardData[y][x].isRevealed) {

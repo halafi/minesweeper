@@ -27,6 +27,7 @@ const Root = () => {
   const [width, setWidth] = useState(6);
   const [height, setHeight] = useState(6);
   const [mines, setMines] = useState(2);
+  const [gameCount, setGameCount] = useState(1);
 
   return (
     <Container flexDirection="column" alignItems="center">
@@ -70,7 +71,7 @@ const Root = () => {
             <input
               id="mines"
               min={1}
-              max={width * height}
+              max={width * height - 1}
               type="number"
               value={mines}
               onChange={(e) =>
@@ -80,10 +81,12 @@ const Root = () => {
               }
             />
           </label>
-          <button type="button">New Game</button>
+          <button type="button" onClick={() => setGameCount(gameCount + 1)}>
+            New Game
+          </button>
         </Menu>
         <Box mt={4}>
-          <Minesweeper width={width} height={height} mines={mines} />
+          <Minesweeper width={width} height={height} mines={mines} gameCount={gameCount} />
         </Box>
       </main>
     </Container>
