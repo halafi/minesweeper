@@ -5,6 +5,7 @@ import {
   plantMines,
   traverseBoard,
   computeNeighbours,
+  revealEmpty,
 } from './utils';
 
 const dataHelper = (
@@ -184,6 +185,19 @@ describe('#utils', () => {
       [2, 2, 0, 0],
       [0, 2, 2, 2],
       [1, 2, 0, 0],
+    ]);
+  });
+  // x . o O
+  // . . o o
+  // x . . .
+  // . . x x
+  test('revealEmpty', () => {
+    // reveals only in 1st recursion because of hardcoded isEmpty: false
+    expect(revealEmpty(minefieldInput, 4, 4, 3, 0).map((x) => x.map((y) => y.isRevealed))).toEqual([
+      [false, false, true, false],
+      [false, false, true, true],
+      [false, false, false, false],
+      [false, false, false, false],
     ]);
   });
 });

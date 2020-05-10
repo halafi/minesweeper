@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex } from 'rebass/styled-components';
+import { Flex, Text } from 'rebass/styled-components';
 import styled from 'styled-components';
 
 type Props = {
@@ -25,8 +25,10 @@ const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick }: Props) => {
     return '';
   }
   return (
-    <Root width={1} p={1} onClick={onClick}>
-      {content}
+    <Root width={1} onClick={onClick} alignItems="center" justifyContent="center">
+      <Text fontSize={4} fontWeight={700} color={neighbour >= 3 ? 'red' : 'initial'}>
+        {content}
+      </Text>
     </Root>
   );
 };

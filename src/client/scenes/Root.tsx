@@ -26,7 +26,7 @@ const Menu = styled(Flex)`
 const Root = () => {
   const [width, setWidth] = useState(6);
   const [height, setHeight] = useState(6);
-  const [mines, setMines] = useState(10);
+  const [mines, setMines] = useState(2);
 
   return (
     <Container flexDirection="column" alignItems="center">

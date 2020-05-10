@@ -114,3 +114,35 @@ export const initBoardData = (width: number, height: number): CellData[][] => {
   }
   return boardData;
 };
+
+// mutates
+const reveal = (data: CellData[][], width: number, height: number, x: number, y: number) => {
+  const area = traverseBoard(x, y, data, width, height);
+  area.forEach((el) => {
+    if (!el.isRevealed && (el.isEmpty || !el.isMine)) {
+      // eslint-disable-next-line no-param-reassign
+      data[el.y][el.x].isRevealed = true;
+      if (el.isEmpty) {
+        reveal(data, width, height, el.x, el.y);
+      }
+    }
+  });
+  return data;
+};
+
+export const revealEmpty = (
+  data: CellData[][],
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+): CellData[][] => {
+  const newData = R.clone(data);
+  return reveal(newData, width, height, x, y);
+};
+
+export const getHidden = (data: CellData[][]) =>
+  data.reduce((acc, row) => acc.concat(row.filter((item) => !item.isRevealed)), []);
+
+export const getFlags = (data: CellData[][]) =>
+  data.reduce((acc, row) => acc.concat(row.filter((item) => item.isFlagged)), []);
