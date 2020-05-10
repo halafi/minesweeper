@@ -1,4 +1,11 @@
-import { getRandomNumber, revealBoard, initBoardData, plantMines } from './utils';
+import {
+  getRandomNumber,
+  revealBoard,
+  initBoardData,
+  plantMines,
+  traverseBoard,
+  computeNeighbours,
+} from './utils';
 
 const dataHelper = (
   x: number,
@@ -20,6 +27,38 @@ const plantMinesInput = [
   [dataHelper(0, 1), dataHelper(1, 1), dataHelper(2, 1), dataHelper(3, 1)],
   [dataHelper(0, 2), dataHelper(1, 2), dataHelper(2, 2), dataHelper(3, 2)],
   [dataHelper(0, 3), dataHelper(1, 3), dataHelper(2, 3), dataHelper(3, 3)],
+];
+
+// GRID
+// x . . .
+// . . . .
+// x . . .
+// . . x x
+const minefieldInput = [
+  [
+    dataHelper(0, 0, true),
+    dataHelper(1, 0, false),
+    dataHelper(2, 0, false),
+    dataHelper(3, 0, false),
+  ],
+  [
+    dataHelper(0, 1, false),
+    dataHelper(1, 1, false),
+    dataHelper(2, 1, false),
+    dataHelper(3, 1, false),
+  ],
+  [
+    dataHelper(0, 2, true),
+    dataHelper(1, 2, false),
+    dataHelper(2, 2, false),
+    dataHelper(3, 2, false),
+  ],
+  [
+    dataHelper(0, 3, false),
+    dataHelper(1, 3, false),
+    dataHelper(2, 3, true),
+    dataHelper(3, 3, true),
+  ],
 ];
 
 describe('#utils', () => {
@@ -89,7 +128,6 @@ describe('#utils', () => {
       .mockImplementationOnce(() => 1)
       .mockImplementationOnce(() => 1)
       .mockImplementationOnce(() => 1);
-    // @ts-ignore
     expect(plantMines(plantMinesInput, randomizerMockFn, 4, 4, 5, 0, 0)).toEqual(output);
   });
   test('plantMines maximum mines', () => {
@@ -119,7 +157,33 @@ describe('#utils', () => {
         dataHelper(3, 3, true),
       ],
     ];
-    // @ts-ignore
     expect(plantMines(plantMinesInput, getRandomNumber, 4, 4, 15, 0, 0)).toEqual(output);
+  });
+  test('traverseBoard', () => {
+    // note: careful about order
+    expect(traverseBoard(0, 0, minefieldInput, 4, 4)).toEqual([
+      minefieldInput[1][0],
+      minefieldInput[0][1],
+      minefieldInput[1][1],
+    ]);
+    expect(traverseBoard(2, 2, minefieldInput, 4, 4)).toEqual([
+      minefieldInput[1][2], // top
+      minefieldInput[3][2], // bottom
+      minefieldInput[2][1], // left
+      minefieldInput[2][3], // right
+      minefieldInput[1][1], // top left
+      minefieldInput[1][3], // top right
+      minefieldInput[3][3], // bottom right
+      minefieldInput[3][1], // bottom left
+    ]);
+  });
+  test('computeNeighbours', () => {
+    // note: careful about order
+    expect(computeNeighbours(minefieldInput, 4, 4).map((x) => x.map((y) => y.neighbour))).toEqual([
+      [0, 1, 0, 0],
+      [2, 2, 0, 0],
+      [0, 2, 2, 2],
+      [1, 2, 0, 0],
+    ]);
   });
 });

@@ -43,57 +43,52 @@ export const traverseBoard = (
 ): CellData[] => {
   const el = [];
   // top
-  if (x > 0) {
-    el.push(data[x - 1][y]);
+  if (y > 0) {
+    el.push(data[y - 1][x]);
   }
   // bottom
-  if (x < height - 1) {
-    el.push(data[x + 1][y]);
+  if (y < height - 1) {
+    el.push(data[y + 1][x]);
   }
   // left
-  if (y > 0) {
-    el.push(data[x][y - 1]);
+  if (x > 0) {
+    el.push(data[y][x - 1]);
   }
   // right
-  if (y < width - 1) {
-    el.push(data[x][y + 1]);
+  if (x < width - 1) {
+    el.push(data[y][x + 1]);
   }
   // top left
   if (x > 0 && y > 0) {
-    el.push(data[x - 1][y - 1]);
+    el.push(data[y - 1][x - 1]);
   }
   // top right
-  if (x > 0 && y < width - 1) {
-    el.push(data[x - 1][y + 1]);
+  if (y > 0 && x < width - 1) {
+    el.push(data[y - 1][x + 1]);
   }
   // bottom right
-  if (x < height - 1 && y < width - 1) {
-    el.push(data[x + 1][y + 1]);
+  if (y < height - 1 && x < width - 1) {
+    el.push(data[y + 1][x + 1]);
   }
   // bottom left
-  if (x < height - 1 && y > 0) {
-    el.push(data[x + 1][y - 1]);
+  if (y < height - 1 && x > 0) {
+    el.push(data[y + 1][x - 1]);
   }
   return el;
 };
 
 export const computeNeighbours = (data: CellData[][], width: number, height: number) => {
-  const updatedData = [...data];
-
+  const updatedData = R.clone(data);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
-      if (data[y][x].isMine !== true) {
-        let mine = 0;
-        const area = traverseBoard(data[y][x].x, data[y][x].y, data, width, height);
-        area.map((value) => {
-          if (value.isMine) {
-            mine += 1;
-          }
-        });
-        if (mine === 0) {
-          updatedData[y][x].isEmpty = true;
+      const current = updatedData[y][x];
+      if (current.isMine !== true) {
+        const area = traverseBoard(current.x, current.y, updatedData, width, height);
+        const mines = area.reduce((acc, value) => (value.isMine ? acc + 1 : acc), 0);
+        if (mines === 0) {
+          current.isEmpty = true;
         }
-        updatedData[y][x].neighbour = mine;
+        current.neighbour = mines;
       }
     }
   }
