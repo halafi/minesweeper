@@ -146,3 +146,6 @@ export const getHidden = (data: CellData[][]) =>
 
 export const getFlags = (data: CellData[][]) =>
   data.reduce((acc, row) => acc.concat(row.filter((item) => item.isFlagged)), []);
+
+export const getMines = (data: CellData[][]) =>
+  data.reduce((acc, row) => acc.concat(row.filter((item) => item.isMine)), []);

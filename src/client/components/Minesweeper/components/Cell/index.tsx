@@ -8,6 +8,7 @@ type Props = {
   isFlagged: boolean;
   neighbour: number;
   onClick: () => void;
+  onContextMenu: () => void;
 };
 
 const Root = styled(Flex)`
@@ -15,7 +16,7 @@ const Root = styled(Flex)`
   border: 1px solid black;
 `;
 
-const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick }: Props) => {
+const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick, onContextMenu }: Props) => {
   let content = `${neighbour}`;
   if (!isRevealed) {
     content = isFlagged ? '🚩' : '';
@@ -25,7 +26,13 @@ const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick }: Props) => {
     return '';
   }
   return (
-    <Root width={1} onClick={onClick} alignItems="center" justifyContent="center">
+    <Root
+      width={1}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Text fontSize={4} fontWeight={700} color={neighbour >= 3 ? 'red' : 'initial'}>
         {content}
       </Text>

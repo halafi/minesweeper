@@ -13,6 +13,7 @@ import {
   getRandomNumber,
   getHidden,
   getFlags,
+  getMines,
 } from './services/utils';
 
 type Props = {
@@ -43,9 +44,7 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
   }, [width, height, mines, gameCount]);
 
   const handleCellClick = (x: number, y: number) => {
-    if (boardData[y][x].isRevealed) {
-      return;
-    }
+    if (boardData[y][x].isRevealed) return;
     if (gameState === 'ready') {
       // populate board with mines and avoid spawning one on first cell clicked
       setGameState('started');
@@ -88,7 +87,35 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
     setMineCount(mines - getFlags(updatedData).length);
   };
 
-  console.log(boardData);
+  const handleContextMenu = (ev: any, x: number, y: number) => {
+    ev.preventDefault();
+    const updatedData = R.clone(boardData);
+    // let win = false;
+
+    if (updatedData[y][x].isRevealed) return;
+    if (gameState === 'ready') return;
+
+    if (updatedData[y][x].isFlagged) {
+      updatedData[y][x].isFlagged = false;
+    } else {
+      updatedData[y][x].isFlagged = true;
+    }
+
+    const flags = getFlags(updatedData);
+    const newMineCount = mines - flags.length;
+
+    if (newMineCount === 0) {
+      if (JSON.stringify(getMines(updatedData)) === JSON.stringify(flags)) {
+        setGameState('won');
+        setBoardData(revealBoard(updatedData));
+        setTimeout(() => alert('You Win'), 10);
+        setMineCount(mines - getFlags(updatedData).length);
+        return;
+      }
+    }
+    setBoardData(updatedData);
+    setMineCount(mines - getFlags(updatedData).length);
+  };
 
   return (
     <Flex flexDirection="column">
@@ -103,6 +130,7 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
                 isFlagged={item.isFlagged}
                 neighbour={item.neighbour}
                 onClick={() => handleCellClick(item.x, item.y)}
+                onContextMenu={(ev) => handleContextMenu(ev, item.x, item.y)}
               />
             </Flex>
           )),
