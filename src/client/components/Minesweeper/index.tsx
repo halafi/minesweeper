@@ -38,7 +38,7 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
   const [mineCount, setMineCount] = useState<number>(mines);
 
   useEffect(() => {
-    setBoardData(initBoardData(height, width));
+    setBoardData(initBoardData(width, height));
     setGameState('ready');
     setMineCount(mines);
   }, [width, height, mines, gameCount]);
