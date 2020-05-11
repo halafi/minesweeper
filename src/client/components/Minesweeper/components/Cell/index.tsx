@@ -34,11 +34,11 @@ const getColor = (neighbour: number) => {
 const Root = styled(Flex)<RootProps>`
   cursor: pointer;
   box-sizing: border-box;
-  border-top: ${({ isRevealed }) => (isRevealed ? '1px solid #9B9B9B' : '3px solid #F7F7F7')};
-  border-right: ${({ isRevealed }) => (isRevealed ? '1px solid #989898' : '3px solid #818181')};
-  border-bottom: ${({ isRevealed }) => (isRevealed ? '1px solid #989898' : '3px solid #818181')};
-  border-left: ${({ isRevealed }) => (isRevealed ? '1px solid #989898' : '3px solid #F7F7F7')};
-  background-color: #c0c0c0;
+  box-shadow: inset 0px 0 5px 1px rgba(0, 0, 0, 0.5);
+  background: ${({ isRevealed }) =>
+    isRevealed ? `url('/images/ground.png')` : `url('/images/grass.png')`};
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick, onContextMenu }: Props) => {
@@ -59,7 +59,7 @@ const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick, onContextMenu
       justifyContent="center"
       isRevealed={isRevealed}
     >
-      <Text fontSize={4} fontWeight={700} color={getColor(neighbour)}>
+      <Text fontSize={4} fontWeight={700} color={getColor(neighbour)} bg="black">
         {content}
       </Text>
     </Root>

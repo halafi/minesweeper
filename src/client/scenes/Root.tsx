@@ -24,8 +24,8 @@ const Menu = styled(Flex)`
 `;
 
 const Root = () => {
-  const [width, setWidth] = useState(10);
-  const [height, setHeight] = useState(10);
+  const [width, setWidth] = useState(20);
+  const [height, setHeight] = useState(20);
   const [mines, setMines] = useState(4);
   const [gameCount, setGameCount] = useState(1);
 
