@@ -34,7 +34,7 @@ const getColor = (neighbour: number) => {
 const Root = styled(Flex)<RootProps>`
   cursor: pointer;
   box-sizing: border-box;
-  box-shadow: inset 0px 0 5px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0px 0 3px 1px rgba(0, 0, 0, 0.5);
   background: ${({ isRevealed }) =>
     isRevealed ? `url('/images/ground.png')` : `url('/images/grass.png')`};
   background-repeat: no-repeat;
@@ -59,9 +59,18 @@ const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick, onContextMenu
       justifyContent="center"
       isRevealed={isRevealed}
     >
-      <Text fontSize={4} fontWeight={700} color={getColor(neighbour)} bg="black">
-        {content}
-      </Text>
+      {content && (
+        <Text
+          p={1}
+          fontSize={4}
+          lineHeight={1}
+          fontWeight={700}
+          color={getColor(neighbour)}
+          bg="black"
+        >
+          {content}
+        </Text>
+      )}
     </Root>
   );
 };
