@@ -2,6 +2,7 @@ import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
 
 type Props = {
+  width: number;
   isRevealed: boolean;
   isMine: boolean;
   isFlagged: boolean;
@@ -26,22 +27,27 @@ const getColor = (neighbour: number) => {
   return '#2278CF';
 };
 
-const Image = styled.img`
-  width: 28px;
-  height: 28px;
+type ImageProps = {
+  boardWidth: number;
+};
+
+const Image = styled.img<ImageProps>`
+  width: ${({ boardWidth }) => 300 / boardWidth}px;
+  height: ${({ boardWidth }) => 300 / boardWidth}px;
 `;
 
 const getContent = (
+  width: number,
   isRevealed: boolean,
   isFlagged: boolean,
   isMine: boolean,
   neighbour: number,
 ): React.ReactNode => {
   if (!isRevealed) {
-    return isFlagged ? <Image src="/images/sign.png" alt="warning sign" /> : '';
+    return isFlagged ? <Image boardWidth={width} src="/images/sign.png" alt="warning sign" /> : '';
   }
   if (isMine) {
-    return <Image src="/images/tnt.png" alt="bomb" />;
+    return <Image boardWidth={width} src="/images/tnt.png" alt="bomb" />;
   }
   if (neighbour === 0) {
     return '';
@@ -60,7 +66,7 @@ const Root = styled.div<RootProps>`
   width: 100%;
   cursor: pointer;
   box-sizing: border-box;
-  box-shadow: inset 0px 0 3px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0px 0 2px 1px rgba(0, 0, 0, 0.5);
   background: ${({ isRevealed }) =>
     isRevealed ? `url('/images/ground.png')` : `url('/images/grass.png')`};
   background-repeat: no-repeat;
@@ -77,7 +83,7 @@ const Label = styled.div<LabelProps>`
   position: absolute;
   user-select: none;
   padding: 4px;
-  font-size: 28px;
+  font-size: 1em;
   font-weight: 700;
   line-height: 1;
   text-align: center;
@@ -86,8 +92,16 @@ const Label = styled.div<LabelProps>`
   color: ${({ neighbour }) => getColor(neighbour)};
 `;
 
-const Cell = ({ isRevealed, isMine, isFlagged, neighbour, onClick, onContextMenu }: Props) => {
-  const content = getContent(isRevealed, isFlagged, isMine, neighbour);
+const Cell = ({
+  width,
+  isRevealed,
+  isMine,
+  isFlagged,
+  neighbour,
+  onClick,
+  onContextMenu,
+}: Props) => {
+  const content = getContent(width, isRevealed, isFlagged, isMine, neighbour);
   return (
     <Root onClick={onClick} onContextMenu={onContextMenu} isRevealed={isRevealed}>
       {content && (

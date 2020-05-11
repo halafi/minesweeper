@@ -8,7 +8,6 @@ const Root = styled.div`
   flex-wrap: wrap;
   width: 100%;
   max-width: 500px;
-  height: 100%;
   height: 500px;
 `;
 
@@ -21,6 +20,7 @@ type CellWrapperProps = {
 const CellWrapper = styled.div<CellWrapperProps>`
   display: flex;
   width: ${({ boardWidth }) => `${(1 / boardWidth) * 100}%`};
+  font-size: ${({ boardWidth }) => `${300 / boardWidth}px`};
 `;
 
 type Props = {
@@ -38,6 +38,7 @@ const Board = ({ boardData, width, height, onCellClick, onContextMenu }: Props) 
         row.map((item) => (
           <CellWrapper key={item.x + item.y * row.length} boardWidth={width} boardHeight={height}>
             <Cell
+              width={width}
               isMine={item.isMine}
               isRevealed={item.isRevealed}
               isFlagged={item.isFlagged}

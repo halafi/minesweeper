@@ -28,9 +28,9 @@ const Menu = styled(Row)`
   }
 `;
 
-const MINES = [4, 10, 20, 40, 99, 200];
-const WIDTHS = [8, 10, 12, 16, 24, 24];
-const HEIGHTS = [8, 10, 12, 16, 24, 24];
+const MINES = [5, 10, 20, 40, 99, 150];
+const WIDTHS = [8, 10, 12, 16, 20, 24];
+const HEIGHTS = [8, 10, 12, 16, 20, 24];
 
 const Root = () => {
   const [difficulty, setDifficulty] = useState(2);
@@ -50,7 +50,7 @@ const Root = () => {
             <option value="2">Normal</option>
             <option value="3">Hard</option>
             <option value="4">Very Hard</option>
-            <option value="5">Impossible</option>
+            <option value="5">You Shall Not Pass</option>
           </select>
           <button type="button" onClick={() => setGameCount(gameCount + 1)}>
             New Game

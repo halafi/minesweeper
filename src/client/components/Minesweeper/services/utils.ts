@@ -6,7 +6,7 @@ export const getRandomNumber = (dimension: number): number =>
   dimension === 0 ? 0 : Math.floor(Math.random() * 1000 + 1) % dimension;
 
 export const revealBoard = (data: CellData[][]): CellData[][] =>
-  data.map((row) => row.map((item) => ({ ...item, isRevealed: true })));
+  data.map((row) => row.map((item) => ({ ...item, isRevealed: true, isFlagged: false })));
 
 // do this on first click, avoid planting at initial location
 export const plantMines = (
