@@ -16,11 +16,11 @@ type CellWrapperProps = {
   boardWidth: number;
   boardHeight: number;
 };
-// TODO; height not needed
+
+// height: ${({ boardHeight }) => `${500 / boardHeight}px`};
 const CellWrapper = styled.div<CellWrapperProps>`
   display: flex;
   width: ${({ boardWidth }) => `${(1 / boardWidth) * 100}%`};
-  height: ${({ boardHeight }) => `${500 / boardHeight}px`};
 `;
 
 type Props = {

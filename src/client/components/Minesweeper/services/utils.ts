@@ -122,6 +122,8 @@ const reveal = (data: CellData[][], width: number, height: number, x: number, y:
     if (!el.isRevealed && (el.isEmpty || !el.isMine)) {
       // eslint-disable-next-line no-param-reassign
       data[el.y][el.x].isRevealed = true;
+      // eslint-disable-next-line no-param-reassign
+      data[el.y][el.x].isFlagged = false;
       if (el.isEmpty) {
         reveal(data, width, height, el.x, el.y);
       }

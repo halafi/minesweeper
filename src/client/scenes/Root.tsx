@@ -9,15 +9,12 @@ const Container = styled(Column)`
   align-items: center;
   height: 100vh;
   color: ${({ theme }) => theme.colors.text};
+  background-color: #588939;
 `;
 
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
+const Main = styled.main`
   width: 100%;
-  padding: 0 16px;
-  border-bottom: 1px solid black;
+  max-width: 500px;
 `;
 
 const Menu = styled(Row)`
@@ -31,70 +28,36 @@ const Menu = styled(Row)`
   }
 `;
 
+const MINES = [4, 10, 20, 40, 99, 200];
+const WIDTHS = [8, 10, 12, 16, 24, 24];
+const HEIGHTS = [8, 10, 12, 16, 24, 24];
+
 const Root = () => {
-  const [width, setWidth] = useState(10);
-  const [height, setHeight] = useState(10);
-  const [mines, setMines] = useState(4);
+  const [difficulty, setDifficulty] = useState(2);
   const [gameCount, setGameCount] = useState(1);
+
+  const width = WIDTHS[difficulty];
+  const height = HEIGHTS[difficulty];
+  const mines = MINES[difficulty];
 
   return (
     <Container>
-      <Header>
-        <h1>Minesweeper</h1>
-      </Header>
-      <main>
+      <Main>
         <Menu>
-          <label htmlFor="width">
-            Width:
-            <input
-              id="width"
-              type="number"
-              min={1}
-              max={64}
-              value={width}
-              onChange={(e) =>
-                e.target.validity.valid && e.target.value
-                  ? setWidth(parseInt(e.target.value, 10))
-                  : {}
-              }
-            />
-          </label>
-          <label htmlFor="height">
-            Height:
-            <input
-              id="height"
-              type="number"
-              min={1}
-              max={64}
-              value={height}
-              onChange={(e) =>
-                e.target.validity.valid && e.target.value
-                  ? setHeight(parseInt(e.target.value, 10))
-                  : {}
-              }
-            />
-          </label>
-          <label htmlFor="mines">
-            Mines:
-            <input
-              id="mines"
-              min={1}
-              max={width * height - 1}
-              type="number"
-              value={mines}
-              onChange={(e) =>
-                e.target.validity.valid && e.target.value
-                  ? setMines(parseInt(e.target.value, 10))
-                  : {}
-              }
-            />
-          </label>
+          <select value={difficulty} onChange={(e) => setDifficulty(Number(e.target.value))}>
+            <option value="0">Very Easy</option>
+            <option value="1">Easy</option>
+            <option value="2">Normal</option>
+            <option value="3">Hard</option>
+            <option value="4">Very Hard</option>
+            <option value="5">Impossible</option>
+          </select>
           <button type="button" onClick={() => setGameCount(gameCount + 1)}>
             New Game
           </button>
         </Menu>
         <Minesweeper width={width} height={height} mines={mines} gameCount={gameCount} />
-      </main>
+      </Main>
     </Container>
   );
 };
