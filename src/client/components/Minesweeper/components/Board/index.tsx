@@ -6,10 +6,8 @@ import { CellData } from '../../records/CellData';
 const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
   max-width: 500px;
   height: 500px;
-  background-color: black;
   border: 1px solid gray;
 `;
 

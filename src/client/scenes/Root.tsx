@@ -7,9 +7,7 @@ import Row from '../primitives/Row';
 
 const Container = styled(Column)`
   align-items: center;
-  height: 100vh;
   color: ${({ theme }) => theme.colors.text};
-  background-color: black;
 `;
 
 const Main = styled.main`
@@ -33,9 +31,9 @@ const Restart = styled.span`
   cursor: pointer;
 `;
 
-const MINES = [10, 20, 40, 99, 200];
-const WIDTHS = [10, 12, 16, 24, 24];
-const HEIGHTS = [10, 12, 16, 24, 24];
+const MINES = [8, 20, 40, 80, 150];
+const WIDTHS = [10, 12, 16, 20, 24];
+const HEIGHTS = [10, 12, 16, 20, 24];
 
 const Root = () => {
   const [difficulty, setDifficulty] = useState(1);
