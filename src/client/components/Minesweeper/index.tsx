@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SyntheticEvent } from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
-import { Flex, Text } from 'rebass/styled-components';
-import Cell from './components/Cell';
 import { CellData } from './records/CellData';
 import {
   initBoardData,
@@ -15,6 +13,8 @@ import {
   getFlags,
   getMines,
 } from './services/utils';
+import Board from './components/Board/index';
+import Column from '../../primitives/Column';
 
 type Props = {
   height: number;
@@ -23,11 +23,20 @@ type Props = {
   gameCount: number;
 };
 
-const Root = styled(Flex)`
-  width: 100%;
-  max-width: 500px;
-  height: 100%;
-  height: 500px;
+const Image = styled.img`
+  width: 28px;
+  height: 28px;
+`;
+
+const Text = styled.span`
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  font-size: 28px;
+  font-weight: 700;
+  #sign {
+    margin-right: 8px;
+  }
 `;
 
 type GameState = 'ready' | 'started' | 'won' | 'lost';
@@ -87,7 +96,7 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
     setMineCount(mines - getFlags(updatedData).length);
   };
 
-  const handleContextMenu = (ev: any, x: number, y: number) => {
+  const handleContextMenu = (ev: SyntheticEvent, x: number, y: number) => {
     ev.preventDefault();
     if (mineCount === 0 || boardData[y][x].isRevealed || gameState === 'ready') return;
     const updatedData = R.clone(boardData);
@@ -115,30 +124,19 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
   };
 
   return (
-    <Flex flexDirection="column">
-      <Text my={2} fontSize={4} fontWeight={700}>
-        <span role="img" aria-label="flags">
-          🚩
-        </span>
+    <Column>
+      <Text>
+        <Image id="sign" src="/images/sign.png" alt="warning sign" />
         {mineCount}
       </Text>
-      <Root flexWrap="wrap">
-        {boardData.map((row) =>
-          row.map((item) => (
-            <Flex key={item.x + item.y * row.length} width={1 / width} height={`${500 / height}px`}>
-              <Cell
-                isMine={item.isMine}
-                isRevealed={item.isRevealed}
-                isFlagged={item.isFlagged}
-                neighbour={item.neighbour}
-                onClick={() => handleCellClick(item.x, item.y)}
-                onContextMenu={(ev) => handleContextMenu(ev, item.x, item.y)}
-              />
-            </Flex>
-          )),
-        )}
-      </Root>
-    </Flex>
+      <Board
+        boardData={boardData}
+        width={width}
+        height={height}
+        onCellClick={handleCellClick}
+        onContextMenu={handleContextMenu}
+      />
+    </Column>
   );
 };
 

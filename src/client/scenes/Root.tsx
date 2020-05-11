@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
-import { Box, Flex } from 'rebass/styled-components';
 import styled from 'styled-components';
 import { hot } from 'react-hot-loader';
 import Minesweeper from '../components/Minesweeper';
+import Column from '../primitives/Column';
+import Row from '../primitives/Row';
 
-const Container = styled(Flex)`
+const Container = styled(Column)`
+  align-items: center;
   height: 100vh;
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const Header = styled(Flex)`
+const Header = styled.header`
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 16px;
   border-bottom: 1px solid black;
 `;
 
-const Menu = styled(Flex)`
+const Menu = styled(Row)`
+  margin-top: 16px;
   label {
     font-size: 18px;
   }
@@ -24,18 +32,18 @@ const Menu = styled(Flex)`
 `;
 
 const Root = () => {
-  const [width, setWidth] = useState(20);
-  const [height, setHeight] = useState(20);
+  const [width, setWidth] = useState(10);
+  const [height, setHeight] = useState(10);
   const [mines, setMines] = useState(4);
   const [gameCount, setGameCount] = useState(1);
 
   return (
-    <Container flexDirection="column" alignItems="center">
-      <Header as="header" alignItems="center" width={1} px={4}>
+    <Container>
+      <Header>
         <h1>Minesweeper</h1>
       </Header>
       <main>
-        <Menu mt={4}>
+        <Menu>
           <label htmlFor="width">
             Width:
             <input
@@ -85,9 +93,7 @@ const Root = () => {
             New Game
           </button>
         </Menu>
-        <Box mt={4}>
-          <Minesweeper width={width} height={height} mines={mines} gameCount={gameCount} />
-        </Box>
+        <Minesweeper width={width} height={height} mines={mines} gameCount={gameCount} />
       </main>
     </Container>
   );
