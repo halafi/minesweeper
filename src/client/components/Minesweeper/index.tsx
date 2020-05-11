@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
-import { Flex } from 'rebass/styled-components';
+import { Flex, Text } from 'rebass/styled-components';
 import Cell from './components/Cell';
 import { CellData } from './records/CellData';
 import {
@@ -44,7 +44,7 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
   }, [width, height, mines, gameCount]);
 
   const handleCellClick = (x: number, y: number) => {
-    if (boardData[y][x].isRevealed) return;
+    if (boardData[y][x].isRevealed || boardData[y][x].isFlagged) return;
     if (gameState === 'ready') {
       // populate board with mines and avoid spawning one on first cell clicked
       setGameState('started');
@@ -89,11 +89,8 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
 
   const handleContextMenu = (ev: any, x: number, y: number) => {
     ev.preventDefault();
+    if (mineCount === 0 || boardData[y][x].isRevealed || gameState === 'ready') return;
     const updatedData = R.clone(boardData);
-    // let win = false;
-
-    if (updatedData[y][x].isRevealed) return;
-    if (gameState === 'ready') return;
 
     if (updatedData[y][x].isFlagged) {
       updatedData[y][x].isFlagged = false;
@@ -119,11 +116,16 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
 
   return (
     <Flex flexDirection="column">
-      Mines: {mineCount}
+      <Text my={2} fontSize={4} fontWeight={700}>
+        <span role="img" aria-label="flags">
+          🚩
+        </span>
+        {mineCount}
+      </Text>
       <Root flexWrap="wrap">
         {boardData.map((row) =>
           row.map((item) => (
-            <Flex width={1 / width} key={item.x + item.y * row.length}>
+            <Flex key={item.x + item.y * row.length} width={1 / width} height={`${500 / height}px`}>
               <Cell
                 isMine={item.isMine}
                 isRevealed={item.isRevealed}
