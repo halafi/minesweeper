@@ -15,7 +15,7 @@ type GlobalStyleProps = {
 const GlobalStyle = createGlobalStyle`
   body {
     color: ${({ theme }: GlobalStyleProps) => theme.colors.text};
-    font-family: 'Baloo 2', cursive;
+    font-family: 'Baloo 2', serif;
   }
 `;
 

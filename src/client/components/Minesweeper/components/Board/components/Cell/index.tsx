@@ -33,7 +33,6 @@ type ImageProps = {
 
 const Image = styled.img<ImageProps>`
   width: ${({ boardWidth }) => 300 / boardWidth}px;
-  height: ${({ boardWidth }) => 300 / boardWidth}px;
 `;
 
 const getContent = (

@@ -24,6 +24,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
+    "react-timer-hook": "^2.0.2",
     "regenerator-runtime": "^0.13.5",
     "styled-components": "^5.1.0",
     "styled-normalize": "^8.0.7"

@@ -9,6 +9,8 @@ const Root = styled.div`
   width: 100%;
   max-width: 500px;
   height: 500px;
+  background-color: black;
+  border: 1px solid gray;
 `;
 
 type CellWrapperProps = {
