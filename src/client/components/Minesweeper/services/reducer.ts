@@ -4,19 +4,19 @@ import GAME_MODES from '../consts/gameModes';
 
 type GameState = 'ready' | 'started' | 'won' | 'lost';
 
-const SET_GAME_STATE = 'SET_GAME_STATE';
+// const SET_GAME_STATE = 'SET_GAME_STATE';
 const SET_MINE_COUNT = 'SET_MINE_COUNT';
 const SET_DIFFICULTY = 'SET_DIFFICULTY';
 const RESET_GAME = 'RESET_GAME';
 const START_GAME = 'START_GAME';
 const SET_BOARD_DATA = 'SET_BOARD_DATA';
 
-type SetGameStateAction = {
-  type: typeof SET_GAME_STATE;
-  payload: {
-    gameState: GameState;
-  };
-};
+// type SetGameStateAction = {
+//   type: typeof SET_GAME_STATE;
+//   payload: {
+//     gameState: GameState;
+//   };
+// };
 
 type SetMineCountAction = {
   type: typeof SET_MINE_COUNT;
@@ -54,10 +54,10 @@ type SetBoardDataAction = {
   };
 };
 
-export const setGameState = (gameState: GameState): SetGameStateAction => ({
-  type: SET_GAME_STATE,
-  payload: { gameState },
-});
+// export const setGameState = (gameState: GameState): SetGameStateAction => ({
+//   type: SET_GAME_STATE,
+//   payload: { gameState },
+// });
 
 export const resetGame = (width: number, height: number): ResetGameAction => ({
   type: RESET_GAME,
@@ -83,12 +83,8 @@ export const setBoardData = (
 });
 
 export type MinesweeperActions =
-  | SetGameStateAction
-  | SetMineCountAction
-  | SetDifficultyAction
-  | StartGameAction
-  | ResetGameAction
-  | SetBoardDataAction;
+  // | SetGameStateAction
+  SetMineCountAction | SetDifficultyAction | StartGameAction | ResetGameAction | SetBoardDataAction;
 
 export type State = {
   difficulty: number;
@@ -99,8 +95,8 @@ export type State = {
 
 const minesweeperReducer = (oldState: State, action: MinesweeperActions): State => {
   switch (action.type) {
-    case SET_GAME_STATE:
-      return { ...oldState, gameState: action.payload.gameState };
+    // case SET_GAME_STATE:
+    //   return { ...oldState, gameState: action.payload.gameState };
     case SET_MINE_COUNT:
       return { ...oldState, mineCount: action.payload.mineCount };
     case SET_DIFFICULTY:

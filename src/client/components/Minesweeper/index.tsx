@@ -18,13 +18,13 @@ import Row from '../../primitives/Row';
 import media from '../../services/media/index';
 import minesweeperReducer, {
   resetGame,
-  setGameState,
   setBoardData,
   setMineCount,
   setDifficulty,
 } from './services/reducer';
 import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
+import Modal from '../Modal';
 
 const Restart = styled.span`
   font-size: 28px;
@@ -33,6 +33,27 @@ const Restart = styled.span`
 const Image = styled.img`
   width: 22px;
   height: 22px;
+`;
+
+const CoverImage = styled.img`
+  width: 300px;
+  min-height: 200px;
+  ${media.tablet} {
+    width: 350px;
+  }
+`;
+
+const ModalContent = styled(Column)`
+  color: white;
+  padding: 8px;
+  align-items: center;
+  font-size: 18px;
+`;
+
+const ModalText = styled.span`
+  white-space: nowrap;
+  text-align: center;
+  margin: 12px 0;
 `;
 
 const Menu = styled(Row)`
@@ -81,6 +102,17 @@ const Minesweeper = () => {
 
   useEffect(restart, [difficulty]);
 
+  const time = seconds + minutes * 60 + hours * 3600;
+
+  const updateStorage = () => {
+    const item = `besttime-${difficulty}`;
+    const storageItem = localStorage.getItem(item);
+    console.log(storageItem);
+    if ((!storageItem && storageItem !== '0') || (storageItem && time < Number(storageItem))) {
+      localStorage.setItem(item, String(time));
+    }
+  };
+
   const handleCellClick = (x: number, y: number) => {
     if (boardData[y][x].isRevealed || boardData[y][x].isFlagged) return;
     if (gameState === 'ready') {
@@ -99,8 +131,8 @@ const Minesweeper = () => {
         // insta win
         pause(); // stop timer
         yuppieSound.play().then(() => {
+          updateStorage();
           dispatch(setBoardData(revealBoard(revealedData), 'won'));
-          setTimeout(() => alert('You Win'), 10);
         });
       } else {
         dispatch(setBoardData(revealedData, 'started'));
@@ -110,8 +142,8 @@ const Minesweeper = () => {
     if (boardData[y][x].isMine) {
       pause();
       explosionSound.play().then(() => {
+        // game over
         dispatch(setBoardData(revealBoard(boardData), 'lost'));
-        alert('Game Over');
       });
       return;
     }
@@ -125,9 +157,10 @@ const Minesweeper = () => {
     }
     if (getHidden(updatedData).length === mines) {
       pause();
-      yuppieSound.play();
-      dispatch(setBoardData(revealBoard(updatedData), 'won'));
-      setTimeout(() => alert('You Win'), 10);
+      yuppieSound.play().then(() => {
+        updateStorage();
+        dispatch(setBoardData(revealBoard(updatedData), 'won'));
+      });
     } else {
       dispatch(setBoardData(updatedData));
     }
@@ -152,9 +185,8 @@ const Minesweeper = () => {
       if (JSON.stringify(getMines(updatedData)) === JSON.stringify(flags)) {
         pause();
         yuppieSound.play();
-        dispatch(setGameState('won'));
-        dispatch(setBoardData(revealBoard(updatedData)));
-        setTimeout(() => alert('You Win'), 10);
+        updateStorage();
+        dispatch(setBoardData(revealBoard(updatedData), 'won'));
         dispatch(setMineCount(mines - getFlags(updatedData).length));
         return;
       }
@@ -163,7 +195,21 @@ const Minesweeper = () => {
     dispatch(setMineCount(mines - getFlags(updatedData).length));
   };
 
-  const time = seconds + minutes * 60 + hours * 3600;
+  const RestartNode = (
+    // eslint-disable-next-line
+    <Restart
+      role="img"
+      aria-label="refresh"
+      onClick={() => {
+        if (gameState !== 'ready') {
+          restart();
+        }
+      }}
+      tabIndex={0}
+    >
+      🔄
+    </Restart>
+  );
 
   return (
     <Column>
@@ -175,10 +221,11 @@ const Minesweeper = () => {
             dispatch(setDifficulty(Number(e.target.value)));
           }}
         >
-          <option value="0">Easy</option>
-          <option value="1">Normal</option>
-          <option value="2">Hard</option>
-          <option value="3">Very Hard</option>
+          {GAME_MODES.map((mode, i) => (
+            <option key={mode.name} value={i}>
+              {mode.name}
+            </option>
+          ))}
         </select>
         <div>
           <Image id="sign" src="/images/sign.png" alt="warning sign" />
@@ -189,19 +236,44 @@ const Minesweeper = () => {
           {time}
         </div>
         {/* eslint-disable-next-line */}
-        <Restart
-          role="img"
-          aria-label="refresh"
-          onClick={() => {
-            if (gameState !== 'ready') {
-              restart();
-            }
-          }}
-          tabIndex={0}
-        >
-          🔄
-        </Restart>
+        {RestartNode}
       </Menu>
+      {gameState === 'lost' && (
+        <Modal>
+          <ModalContent>
+            <CoverImage src="/images/elmosion.jpg" alt="explosion" />
+            <ModalText>
+              <span role="img" aria-label="trophy">
+                🏆
+              </span>{' '}
+              Best time ({GAME_MODES[difficulty].name}):{' '}
+              {localStorage.getItem(`besttime-${difficulty}`) || '---'}
+            </ModalText>
+            {RestartNode}
+          </ModalContent>
+        </Modal>
+      )}
+      {gameState === 'won' && (
+        <Modal>
+          <ModalContent>
+            <CoverImage src="/images/win.jpg" alt="win" />
+            <ModalText>
+              <span role="img" aria-label="trophy">
+                🏆
+              </span>{' '}
+              Best time ({GAME_MODES[difficulty].name}):{' '}
+              {localStorage.getItem(`besttime-${difficulty}`) || '---'}
+            </ModalText>
+            <ModalText>
+              <span role="img" aria-label="time">
+                ⏰
+              </span>
+              Current run: {time}
+            </ModalText>
+            {RestartNode}
+          </ModalContent>
+        </Modal>
+      )}
       <Board
         boardData={boardData}
         width={width}
