@@ -107,7 +107,6 @@ const Minesweeper = () => {
   const updateStorage = () => {
     const item = `besttime-${difficulty}`;
     const storageItem = localStorage.getItem(item);
-    console.log(storageItem);
     if ((!storageItem && storageItem !== '0') || (storageItem && time < Number(storageItem))) {
       localStorage.setItem(item, String(time));
     }

@@ -6,6 +6,10 @@ import { themeDefault } from './records/Theme';
 import type { Theme } from './records/Theme';
 import Root from './scenes/Root';
 
+if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
+  navigator.serviceWorker.register('/sw.js');
+}
+
 const container = document.getElementById('container');
 
 type GlobalStyleProps = {

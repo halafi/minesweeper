@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const Assets = require('assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
+const { InjectManifest } = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => ({
   entry: {
@@ -43,6 +44,11 @@ module.exports = (env, argv) => ({
     new CompressionPlugin({
       test: /\.js$/i,
       threshold: 10240,
+    }),
+    new InjectManifest({
+      swSrc: './src/client/service-worker.js',
+      swDest: './sw.js',
+      mode: 'production',
     }),
   ],
 });

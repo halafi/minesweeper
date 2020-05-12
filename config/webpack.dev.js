@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const Assets = require('assets-webpack-plugin');
 const path = require('path');
+// const { InjectManifest } = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => ({
   entry: {
@@ -41,10 +42,14 @@ module.exports = (env, argv) => ({
       prettyPrint: true,
     }),
     new webpack.DefinePlugin({
-      __DEV__: true,
+      // __DEV__: true,
       'process.env': {
         NODE_ENV: JSON.stringify(argv.mode),
       },
     }),
+    // new InjectManifest({
+    //   swSrc: './src/client/service-worker.js',
+    //   swDest: './sw.js',
+    // }),
   ],
 });

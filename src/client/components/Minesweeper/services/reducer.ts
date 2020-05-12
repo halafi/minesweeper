@@ -51,13 +51,9 @@ type SetBoardDataAction = {
   payload: {
     boardData: CellData[][];
     gameState?: GameState;
+    mineCount?: number;
   };
 };
-
-// export const setGameState = (gameState: GameState): SetGameStateAction => ({
-//   type: SET_GAME_STATE,
-//   payload: { gameState },
-// });
 
 export const resetGame = (width: number, height: number): ResetGameAction => ({
   type: RESET_GAME,
@@ -77,9 +73,10 @@ export const setDifficulty = (difficulty: number): SetDifficultyAction => ({
 export const setBoardData = (
   boardData: CellData[][],
   gameState?: GameState,
+  mineCount?: number,
 ): SetBoardDataAction => ({
   type: SET_BOARD_DATA,
-  payload: { boardData, gameState },
+  payload: { boardData, gameState, mineCount },
 });
 
 export type MinesweeperActions =
@@ -109,6 +106,7 @@ const minesweeperReducer = (oldState: State, action: MinesweeperActions): State 
         ...oldState,
         boardData: action.payload.boardData,
         gameState: action.payload.gameState || oldState.gameState,
+        mineCount: action.payload.mineCount || oldState.mineCount,
       };
     case RESET_GAME:
       return {
