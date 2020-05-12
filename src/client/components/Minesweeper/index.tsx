@@ -1,10 +1,8 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react';
+import React, { useReducer, useEffect, SyntheticEvent, Reducer } from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
 import { useStopwatch } from 'react-timer-hook';
-import { CellData } from './records/CellData';
 import {
-  initBoardData,
   computeNeighbours,
   plantMines,
   revealBoard,
@@ -18,6 +16,15 @@ import Board from './components/Board/index';
 import Column from '../../primitives/Column';
 import Row from '../../primitives/Row';
 import media from '../../services/media/index';
+import minesweeperReducer, {
+  resetGame,
+  setGameState,
+  setBoardData,
+  setMineCount,
+  setDifficulty,
+} from './services/reducer';
+import type { State, MinesweeperActions } from './services/reducer';
+import GAME_MODES from './consts/gameModes';
 
 const Restart = styled.span`
   font-size: 28px;
@@ -50,45 +57,36 @@ const Menu = styled(Row)`
   }
 `;
 
-type GameState = 'ready' | 'started' | 'won' | 'lost';
-
 const grassSound = new Audio('/sounds/grass.wav');
 const explosionSound = new Audio('/sounds/explosion.wav');
 const yuppieSound = new Audio('/sounds/yuppie.wav');
 
-const MINES = [10, 30, 80, 140];
-const WIDTHS = [10, 14, 18, 22];
-const HEIGHTS = [10, 14, 18, 22];
-
 const Minesweeper = () => {
-  const [difficulty, setDifficulty] = useState(
-    localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 1,
-  );
-  const width = WIDTHS[difficulty];
-  const height = HEIGHTS[difficulty];
-  const mines = MINES[difficulty];
-  const [gameCount, setGameCount] = useState(1);
-  const [boardData, setBoardData] = useState<CellData[][]>([[]]);
-  const [gameState, setGameState] = useState<GameState>('ready');
-  const [mineCount, setMineCount] = useState<number>(mines);
+  const [state, dispatch] = useReducer<Reducer<State, MinesweeperActions>>(minesweeperReducer, {
+    difficulty: localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 1,
+    boardData: [],
+    gameState: 'ready',
+    mineCount: 0,
+  });
   const { seconds, minutes, hours, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const { difficulty, boardData, gameState, mineCount } = state;
+  const { width, height, mines } = GAME_MODES[difficulty];
 
-  useEffect(() => {
-    setBoardData(initBoardData(width, height));
-    setGameState('ready');
-    setMineCount(mines);
+  const restart = () => {
+    dispatch(resetGame(width, height));
     reset();
-  }, [gameCount, difficulty]);
+  };
+
+  useEffect(restart, [difficulty]);
 
   const handleCellClick = (x: number, y: number) => {
     if (boardData[y][x].isRevealed || boardData[y][x].isFlagged) return;
     if (gameState === 'ready') {
-      // populate board with mines and avoid spawning one on first cell clicked
-      start();
+      // populate board with mines and avoid spawning a mine on first cell clicked
+      start(); // timer
       grassSound.play();
-      setGameState('started');
       const initialData = computeNeighbours(
         plantMines(boardData, getRandomNumber, width, height, mines, x, y),
         width,
@@ -98,22 +96,21 @@ const Minesweeper = () => {
         ? revealEmpty(initialData, width, height, x, y)
         : initialData;
       if (getHidden(revealedData).length === mines) {
-        pause();
+        // insta win
+        pause(); // stop timer
         yuppieSound.play().then(() => {
-          setGameState('won');
-          setBoardData(revealBoard(revealedData));
+          dispatch(setBoardData(revealBoard(revealedData), 'won'));
           setTimeout(() => alert('You Win'), 10);
         });
       } else {
-        setBoardData(revealedData);
+        dispatch(setBoardData(revealedData, 'started'));
       }
       return;
     }
     if (boardData[y][x].isMine) {
       pause();
       explosionSound.play().then(() => {
-        setBoardData(revealBoard(boardData));
-        setGameState('lost');
+        dispatch(setBoardData(revealBoard(boardData), 'lost'));
         alert('Game Over');
       });
       return;
@@ -129,13 +126,12 @@ const Minesweeper = () => {
     if (getHidden(updatedData).length === mines) {
       pause();
       yuppieSound.play();
-      setGameState('won');
-      setBoardData(revealBoard(updatedData));
+      dispatch(setBoardData(revealBoard(updatedData), 'won'));
       setTimeout(() => alert('You Win'), 10);
     } else {
-      setBoardData(updatedData);
+      dispatch(setBoardData(updatedData));
     }
-    setMineCount(mines - getFlags(updatedData).length);
+    dispatch(setMineCount(mines - getFlags(updatedData).length));
   };
 
   const handleContextMenu = (ev: SyntheticEvent, x: number, y: number) => {
@@ -156,15 +152,15 @@ const Minesweeper = () => {
       if (JSON.stringify(getMines(updatedData)) === JSON.stringify(flags)) {
         pause();
         yuppieSound.play();
-        setGameState('won');
-        setBoardData(revealBoard(updatedData));
+        dispatch(setGameState('won'));
+        dispatch(setBoardData(revealBoard(updatedData)));
         setTimeout(() => alert('You Win'), 10);
-        setMineCount(mines - getFlags(updatedData).length);
+        dispatch(setMineCount(mines - getFlags(updatedData).length));
         return;
       }
     }
-    setBoardData(updatedData);
-    setMineCount(mines - getFlags(updatedData).length);
+    dispatch(setBoardData(updatedData));
+    dispatch(setMineCount(mines - getFlags(updatedData).length));
   };
 
   const time = seconds + minutes * 60 + hours * 3600;
@@ -176,7 +172,7 @@ const Minesweeper = () => {
           value={difficulty}
           onChange={(e) => {
             localStorage.setItem('difficulty', e.target.value);
-            setDifficulty(Number(e.target.value));
+            dispatch(setDifficulty(Number(e.target.value)));
           }}
         >
           <option value="0">Easy</option>
@@ -196,7 +192,11 @@ const Minesweeper = () => {
         <Restart
           role="img"
           aria-label="refresh"
-          onClick={() => setGameCount(gameCount + 1)}
+          onClick={() => {
+            if (gameState !== 'ready') {
+              restart();
+            }
+          }}
           tabIndex={0}
         >
           🔄
