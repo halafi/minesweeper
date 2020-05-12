@@ -32,6 +32,7 @@ const GAME_MODES = [
 ];
 
 export default GAME_MODES;
+
 // 10 x 10 / 10 = 10
 // 14 x 14 / 30 = 6,53
 // 16 x 16 / 60 = 4,27

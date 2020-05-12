@@ -80,7 +80,6 @@ type LabelProps = {
 
 const Label = styled.div<LabelProps>`
   position: absolute;
-  user-select: none;
   padding: 4px;
   font-size: 1em;
   font-weight: 700;
