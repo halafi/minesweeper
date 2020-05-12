@@ -61,7 +61,9 @@ const WIDTHS = [10, 14, 18, 22];
 const HEIGHTS = [10, 14, 18, 22];
 
 const Minesweeper = () => {
-  const [difficulty, setDifficulty] = useState(1);
+  const [difficulty, setDifficulty] = useState(
+    localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 1,
+  );
   const width = WIDTHS[difficulty];
   const height = HEIGHTS[difficulty];
   const mines = MINES[difficulty];
@@ -170,7 +172,13 @@ const Minesweeper = () => {
   return (
     <Column>
       <Menu>
-        <select value={difficulty} onChange={(e) => setDifficulty(Number(e.target.value))}>
+        <select
+          value={difficulty}
+          onChange={(e) => {
+            localStorage.setItem('difficulty', e.target.value);
+            setDifficulty(Number(e.target.value));
+          }}
+        >
           <option value="0">Easy</option>
           <option value="1">Normal</option>
           <option value="2">Hard</option>
