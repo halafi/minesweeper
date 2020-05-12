@@ -2,13 +2,16 @@ import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import Cell from './components/Cell';
 import { CellData } from '../../records/CellData';
+import media from '../../../../services/media';
 
 const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
-  max-width: 500px;
   height: 500px;
   border: 1px solid gray;
+  ${media.tablet} {
+    height: 600px;
+  }
 `;
 
 type CellWrapperProps = {
@@ -53,4 +56,4 @@ const Board = ({ boardData, width, height, onCellClick, onContextMenu }: Props) 
   );
 };
 
-export default Board;
+export default React.memo(Board);

@@ -8,6 +8,25 @@ export const getRandomNumber = (dimension: number): number =>
 export const revealBoard = (data: CellData[][]): CellData[][] =>
   data.map((row) => row.map((item) => ({ ...item, isRevealed: true, isFlagged: false })));
 
+export const initBoardData = (width: number, height: number): CellData[][] => {
+  const boardData: CellData[][] = [];
+  for (let y = 0; y < height; y += 1) {
+    boardData.push([]);
+    for (let x = 0; x < width; x += 1) {
+      boardData[y][x] = {
+        x,
+        y,
+        isMine: false,
+        neighbour: 0,
+        isRevealed: false,
+        isEmpty: false,
+        isFlagged: false,
+      };
+    }
+  }
+  return boardData;
+};
+
 // do this on first click, avoid planting at initial location
 export const plantMines = (
   data: CellData[][],
@@ -21,7 +40,6 @@ export const plantMines = (
   let minesPlanted = 0;
   const output = R.clone(data);
   output[startY][startX].isRevealed = true;
-
   while (minesPlanted < mines) {
     const randomx = randomizer(width);
     const randomy = randomizer(height);
@@ -78,45 +96,30 @@ export const traverseBoard = (
 };
 
 export const computeNeighbours = (data: CellData[][], width: number, height: number) => {
-  const updatedData = R.clone(data);
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const current = updatedData[y][x];
-      if (current.isMine !== true) {
-        const area = traverseBoard(current.x, current.y, updatedData, width, height);
+  return data.map((column, y) =>
+    column.map((cell, x) => {
+      if (cell.isMine !== true) {
+        const area = traverseBoard(x, y, data, width, height);
         const mines = area.reduce((acc, value) => (value.isMine ? acc + 1 : acc), 0);
-        if (mines === 0) {
-          current.isEmpty = true;
-        }
-        current.neighbour = mines;
+        return {
+          ...cell,
+          isEmpty: mines === 0,
+          neighbour: mines,
+        };
       }
-    }
-  }
-
-  return updatedData;
-};
-
-export const initBoardData = (width: number, height: number): CellData[][] => {
-  const boardData: CellData[][] = [];
-  for (let y = 0; y < height; y += 1) {
-    boardData.push([]);
-    for (let x = 0; x < width; x += 1) {
-      boardData[y][x] = {
-        x,
-        y,
-        isMine: false,
-        neighbour: 0,
-        isRevealed: false,
-        isEmpty: false,
-        isFlagged: false,
-      };
-    }
-  }
-  return boardData;
+      return cell;
+    }),
+  );
 };
 
 // mutates
-const reveal = (data: CellData[][], width: number, height: number, x: number, y: number) => {
+const reveal = (
+  data: CellData[][],
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+): CellData[][] => {
   const area = traverseBoard(x, y, data, width, height);
   area.forEach((el) => {
     if (!el.isRevealed && (el.isEmpty || !el.isMine)) {
@@ -138,10 +141,7 @@ export const revealEmpty = (
   height: number,
   x: number,
   y: number,
-): CellData[][] => {
-  const newData = R.clone(data);
-  return reveal(newData, width, height, x, y);
-};
+): CellData[][] => reveal(R.clone(data), width, height, x, y);
 
 export const getHidden = (data: CellData[][]) =>
   data.reduce((acc, row) => acc.concat(row.filter((item) => !item.isRevealed)), []);

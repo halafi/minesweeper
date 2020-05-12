@@ -32,7 +32,7 @@ type ImageProps = {
 };
 
 const Image = styled.img<ImageProps>`
-  width: ${({ boardWidth }) => 300 / boardWidth}px;
+  width: ${({ boardWidth }) => 350 / boardWidth}px;
 `;
 
 const getContent = (
@@ -112,4 +112,4 @@ const Cell = ({
   );
 };
 
-export default Cell;
+export default React.memo(Cell);

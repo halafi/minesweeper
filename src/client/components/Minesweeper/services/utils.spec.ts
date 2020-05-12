@@ -76,7 +76,13 @@ describe('#utils', () => {
   });
   test('revealBoard', () => {
     const input = [[{ isRevealed: false }, { isRevealed: true }], [{ isRevealed: false }]];
-    const output = [[{ isRevealed: true }, { isRevealed: true }], [{ isRevealed: true }]];
+    const output = [
+      [
+        { isRevealed: true, isFlagged: false },
+        { isRevealed: true, isFlagged: false },
+      ],
+      [{ isRevealed: true, isFlagged: false }],
+    ];
     // @ts-ignore
     expect(revealBoard(input)).toEqual(output);
   });

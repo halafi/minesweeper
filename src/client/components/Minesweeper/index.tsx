@@ -17,32 +17,36 @@ import {
 import Board from './components/Board/index';
 import Column from '../../primitives/Column';
 import Row from '../../primitives/Row';
+import media from '../../services/media/index';
 
-type Props = {
-  height: number;
-  width: number;
-  mines: number;
-  gameCount: number;
-};
-
+const Restart = styled.span`
+  font-size: 28px;
+  cursor: pointer;
+`;
 const Image = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 `;
 
 const Menu = styled(Row)`
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   color: white;
-  margin: 4px 0;
-  font-size: 28px;
+  padding: 12px 8px;
+  font-size: 24px;
   font-weight: 700;
-  #sign {
+  select {
+    font-size: 18px;
+  }
+  #sign,
+  #clock {
     margin-right: 8px;
   }
   #clock {
-    margin-right: 8px;
     margin-left: 32px;
+  }
+  ${media.tablet} {
+    padding: 12px 0;
   }
 `;
 
@@ -52,11 +56,20 @@ const grassSound = new Audio('/sounds/grass.wav');
 const explosionSound = new Audio('/sounds/explosion.wav');
 const yuppieSound = new Audio('/sounds/yuppie.wav');
 
-const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
+const MINES = [10, 30, 80, 140];
+const WIDTHS = [10, 14, 18, 22];
+const HEIGHTS = [10, 14, 18, 22];
+
+const Minesweeper = () => {
+  const [difficulty, setDifficulty] = useState(1);
+  const width = WIDTHS[difficulty];
+  const height = HEIGHTS[difficulty];
+  const mines = MINES[difficulty];
+  const [gameCount, setGameCount] = useState(1);
   const [boardData, setBoardData] = useState<CellData[][]>([[]]);
   const [gameState, setGameState] = useState<GameState>('ready');
   const [mineCount, setMineCount] = useState<number>(mines);
-  const { seconds, start, pause, reset } = useStopwatch({
+  const { seconds, minutes, hours, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
 
@@ -65,14 +78,13 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
     setGameState('ready');
     setMineCount(mines);
     reset();
-  }, [width, height, mines, gameCount]);
+  }, [gameCount, difficulty]);
 
   const handleCellClick = (x: number, y: number) => {
     if (boardData[y][x].isRevealed || boardData[y][x].isFlagged) return;
     if (gameState === 'ready') {
       // populate board with mines and avoid spawning one on first cell clicked
       start();
-      grassSound.load();
       grassSound.play();
       setGameState('started');
       const initialData = computeNeighbours(
@@ -85,10 +97,11 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
         : initialData;
       if (getHidden(revealedData).length === mines) {
         pause();
-        yuppieSound.play();
-        setGameState('won');
-        setBoardData(revealBoard(revealedData));
-        setTimeout(() => alert('You Win'), 10);
+        yuppieSound.play().then(() => {
+          setGameState('won');
+          setBoardData(revealBoard(revealedData));
+          setTimeout(() => alert('You Win'), 10);
+        });
       } else {
         setBoardData(revealedData);
       }
@@ -96,10 +109,11 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
     }
     if (boardData[y][x].isMine) {
       pause();
-      explosionSound.play();
-      setBoardData(revealBoard(boardData));
-      setGameState('lost');
-      alert('Game Over');
+      explosionSound.play().then(() => {
+        setBoardData(revealBoard(boardData));
+        setGameState('lost');
+        alert('Game Over');
+      });
       return;
     }
     grassSound.load();
@@ -151,15 +165,34 @@ const Minesweeper = ({ width, height, mines, gameCount }: Props) => {
     setMineCount(mines - getFlags(updatedData).length);
   };
 
+  const time = seconds + minutes * 60 + hours * 3600;
+
   return (
     <Column>
       <Menu>
-        <Image id="sign" src="/images/sign.png" alt="warning sign" />
-        {mineCount}
-        <span id="clock" role="img" aria-label="clock">
-          ⏰
-        </span>
-        {seconds}
+        <select value={difficulty} onChange={(e) => setDifficulty(Number(e.target.value))}>
+          <option value="0">Easy</option>
+          <option value="1">Normal</option>
+          <option value="2">Hard</option>
+          <option value="3">Very Hard</option>
+        </select>
+        <div>
+          <Image id="sign" src="/images/sign.png" alt="warning sign" />
+          {mineCount}
+          <span id="clock" role="img" aria-label="clock">
+            ⏰
+          </span>
+          {time}
+        </div>
+        {/* eslint-disable-next-line */}
+        <Restart
+          role="img"
+          aria-label="refresh"
+          onClick={() => setGameCount(gameCount + 1)}
+          tabIndex={0}
+        >
+          🔄
+        </Restart>
       </Menu>
       <Board
         boardData={boardData}
