@@ -13,19 +13,19 @@ const GAME_MODES = [
   },
   {
     name: 'Hard',
-    mines: 60,
+    mines: 50,
     width: 16, // 14 x 25
     height: 16,
   },
   {
     name: 'Very Hard',
-    mines: 80,
+    mines: 70,
     width: 18,
     height: 18,
   },
   {
     name: 'Nightmare',
-    mines: 120,
+    mines: 99,
     width: 20,
     height: 20,
   },
