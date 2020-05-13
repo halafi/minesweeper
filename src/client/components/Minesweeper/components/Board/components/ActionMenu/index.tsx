@@ -11,27 +11,16 @@ const Root = styled.div`
 `;
 
 const Content = styled.div`
-  width: 200px;
+  width: 300px;
   display: flex;
-`;
-
-const CloseIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
-  padding-left: 6px;
-  font-size: 16px;
-  text-align: center;
 `;
 
 const MenuItem = styled.div`
-  cursor: pointer;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 33%;
+  width: 50%;
   padding: 4px 0;
 `;
 
@@ -47,6 +36,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.7);
   padding: 12px;
@@ -56,28 +46,19 @@ type Props = {
   enabled: boolean;
   onDig: () => void;
   onFlag: (ev: SyntheticEvent) => void;
-  onClose: () => void;
 };
 
-const ActionMenu = ({ onDig, onFlag, onClose, enabled }: Props) => (
+const ActionMenu = ({ onDig, onFlag, enabled }: Props) => (
   <Root>
     {enabled && (
       <Content>
         <MenuItem>
-          <ButtonWrapper>
-            {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-            <CloseIcon role="img" aria-label="time" onClick={onClose}>
-              ❌
-            </CloseIcon>
-          </ButtonWrapper>
-        </MenuItem>
-        <MenuItem onClick={onFlag}>
-          <ButtonWrapper>
+          <ButtonWrapper onClick={onFlag}>
             <PlaceSign src="/images/sign.png" alt="warning sign" />
           </ButtonWrapper>
         </MenuItem>
-        <MenuItem onClick={onDig}>
-          <ButtonWrapper>
+        <MenuItem>
+          <ButtonWrapper onClick={onDig}>
             <Shovel src="/images/shovel.png" alt="dig" />
           </ButtonWrapper>
         </MenuItem>
