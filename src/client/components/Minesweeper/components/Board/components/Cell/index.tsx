@@ -35,7 +35,7 @@ type ImageProps = {
 };
 
 const Image = styled.img<ImageProps>`
-  width: ${({ boardWidth }) => 350 / boardWidth}px;
+  width: ${({ boardWidth }) => 250 / boardWidth}px;
 `;
 
 const Explosion = styled.div`

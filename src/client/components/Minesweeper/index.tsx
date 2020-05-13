@@ -24,6 +24,7 @@ import minesweeperReducer, {
   setMineCount,
   setDifficulty,
   closeModal,
+  selectCell,
 } from './services/reducer';
 import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
@@ -91,11 +92,13 @@ const Minesweeper = () => {
     boardData: [],
     gameState: 'ready',
     mineCount: 0,
+    x: null,
+    y: null,
   });
   const { seconds, minutes, hours, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
-  const { difficulty, boardData, gameState, mineCount } = state;
+  const { difficulty, boardData, gameState, mineCount, x, y } = state;
   const { width, height, mines } = GAME_MODES[difficulty];
 
   const restart = () => {
@@ -115,19 +118,19 @@ const Minesweeper = () => {
     }
   };
 
-  const handleCellClick = (x: number, y: number) => {
-    if (boardData[y][x].isRevealed || boardData[y][x].isFlagged) return;
+  const handleCellClick = (cx: number, cy: number) => {
+    if (boardData[cy][cx].isRevealed) return;
     if (gameState === 'ready') {
       // populate board with mines and avoid spawning a mine on first cell clicked
       start(); // timer
       grassSound.play();
       const initialData = computeNeighbours(
-        plantMines(boardData, getRandomNumber, width, height, mines, x, y),
+        plantMines(boardData, getRandomNumber, width, height, mines, cx, cy),
         width,
         height,
       );
-      const revealedData = initialData[y][x].isEmpty
-        ? revealEmpty(initialData, width, height, x, y)
+      const revealedData = initialData[cy][cx].isEmpty
+        ? revealEmpty(initialData, width, height, cx, cy)
         : initialData;
       if (getHidden(revealedData).length === mines) {
         // insta win
@@ -139,21 +142,26 @@ const Minesweeper = () => {
       } else {
         dispatch(setBoardData(revealedData, 'started'));
       }
-      return;
+    } else {
+      dispatch(selectCell(cx, cy));
     }
-    if (boardData[y][x].isMine) {
+  };
+
+  const handleReveal = (cx: number, cy: number) => {
+    if (boardData[cy][cx].isRevealed || boardData[cy][cx].isFlagged) return;
+    if (boardData[cy][cx].isMine) {
       pause();
       explosionSound.play().then(() => {
         // game over
-        dispatch(setBoardData(explode(revealBoard(boardData), x, y), 'lost'));
+        dispatch(setBoardData(explode(revealBoard(boardData), cx, cy), 'lost'));
       });
       return;
     }
     grassSound.load();
     grassSound.play();
-    let updatedData = revealMine(boardData, x, y);
-    if (updatedData[y][x].isEmpty) {
-      updatedData = revealEmpty(updatedData, width, height, x, y);
+    let updatedData = revealMine(boardData, cx, cy);
+    if (updatedData[cy][cx].isEmpty) {
+      updatedData = revealEmpty(updatedData, width, height, cx, cy);
     }
     if (getHidden(updatedData).length === mines) {
       pause();
@@ -167,16 +175,16 @@ const Minesweeper = () => {
     dispatch(setMineCount(mines - getFlags(updatedData).length));
   };
 
-  const handleContextMenu = (ev: SyntheticEvent, x: number, y: number) => {
+  const handleContextMenu = (ev: SyntheticEvent, cx: number, cy: number) => {
     ev.preventDefault();
     if (
-      (mineCount === 0 && !boardData[y][x].isFlagged) ||
-      boardData[y][x].isRevealed ||
+      (mineCount === 0 && !boardData[cy][cx].isFlagged) ||
+      boardData[cy][cx].isRevealed ||
       gameState === 'ready'
     ) {
       return;
     }
-    const updatedData = flag(boardData, x, y);
+    const updatedData = flag(boardData, cx, cy);
     const flags = getFlags(updatedData);
     const newMineCount = mines - flags.length;
     if (newMineCount === 0) {
@@ -278,6 +286,10 @@ const Minesweeper = () => {
         height={height}
         onCellClick={handleCellClick}
         onContextMenu={handleContextMenu}
+        selectedX={x}
+        selectedY={y}
+        onDeselect={() => dispatch(selectCell(null, null))}
+        onReveal={handleReveal}
       />
     </Column>
   );

@@ -11,6 +11,7 @@ const RESET_GAME = 'RESET_GAME';
 const START_GAME = 'START_GAME';
 const SET_BOARD_DATA = 'SET_BOARD_DATA';
 const CLOSE_MODAL = 'CLOSE_MODAL';
+const SELECT_CELL = 'SELECT_CELL';
 
 // type SetGameStateAction = {
 //   type: typeof SET_GAME_STATE;
@@ -60,6 +61,14 @@ type SetBoardDataAction = {
   };
 };
 
+type SelectCellAction = {
+  type: typeof SELECT_CELL;
+  payload: {
+    x: number | null;
+    y: number | null;
+  };
+};
+
 export const resetGame = (width: number, height: number): ResetGameAction => ({
   type: RESET_GAME,
   payload: { boardData: initBoardData(width, height) },
@@ -79,6 +88,14 @@ export const closeModal = (): CloseModalAction => ({
   type: CLOSE_MODAL,
 });
 
+export const selectCell = (x: number | null, y: number | null): SelectCellAction => ({
+  type: SELECT_CELL,
+  payload: {
+    x,
+    y,
+  },
+});
+
 export const setBoardData = (
   boardData: CellData[][],
   gameState?: GameState,
@@ -95,9 +112,12 @@ export type MinesweeperActions =
   | StartGameAction
   | ResetGameAction
   | SetBoardDataAction
-  | CloseModalAction;
+  | CloseModalAction
+  | SelectCellAction;
 
 export type State = {
+  x: number | null;
+  y: number | null;
   difficulty: number;
   boardData: CellData[][];
   gameState: GameState;
@@ -128,9 +148,17 @@ const minesweeperReducer = (oldState: State, action: MinesweeperActions): State 
     case RESET_GAME:
       return {
         ...oldState,
+        x: null,
+        y: null,
         gameState: 'ready',
         mineCount: GAME_MODES[oldState.difficulty].mines,
         boardData: action.payload.boardData,
+      };
+    case SELECT_CELL:
+      return {
+        ...oldState,
+        x: action.payload.x,
+        y: action.payload.y,
       };
     default:
       throw new Error();

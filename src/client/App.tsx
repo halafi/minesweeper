@@ -22,7 +22,6 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }: GlobalStyleProps) => theme.colors.text};
     background-color: black;
     font-family: 'Work Sans', sans-serif;
-    overflow-x: hiden;
   }
 `;
 

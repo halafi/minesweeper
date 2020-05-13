@@ -1,7 +1,7 @@
 const GAME_MODES = [
   {
     name: 'Easy',
-    mines: 1,
+    mines: 10,
     width: 10,
     height: 10,
   },
