@@ -21,9 +21,10 @@ const Overlay = styled.div`
 
 const Container = styled.div`
   position: absolute;
+  padding: 20px 0 0;
   top: 100px;
-  left: calc(50% - 125px);
-  width: 250px;
+  left: calc(50% - 150px);
+  width: 300px;
   z-index: 3;
   border-radius: 5px;
   box-sizing: border-box;
@@ -33,10 +34,25 @@ const Container = styled.div`
   }
 `;
 
+const CloseIcon = styled.span`
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+`;
+
 const Modal = ({ onClose, children }: Props) => (
   <Portal>
     <Overlay onClick={onClose} />
-    <Container>{children}</Container>
+    <Container>
+      {onClose && (
+        // eslint-disable-next-line jsx-a11y/accessible-emoji
+        <CloseIcon role="img" aria-label="time" onClick={onClose}>
+          ❌
+        </CloseIcon>
+      )}
+      {children}
+    </Container>
   </Portal>
 );
 

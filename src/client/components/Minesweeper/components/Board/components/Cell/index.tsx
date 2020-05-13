@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 type Props = {
   width: number;
+  exploded: boolean;
+  wrongFlag: boolean;
   isRevealed: boolean;
   isMine: boolean;
   isFlagged: boolean;
@@ -29,10 +31,17 @@ const getColor = (neighbour: number) => {
 
 type ImageProps = {
   boardWidth: number;
+  wrongFlag?: boolean;
 };
 
 const Image = styled.img<ImageProps>`
   width: ${({ boardWidth }) => 350 / boardWidth}px;
+`;
+
+const Explosion = styled.div`
+  position: relative;
+  z-index: 1;
+  font-size: 2.5em;
 `;
 
 const getContent = (
@@ -41,11 +50,28 @@ const getContent = (
   isFlagged: boolean,
   isMine: boolean,
   neighbour: number,
+  exploded: boolean,
+  wrongFlag: boolean,
 ): React.ReactNode => {
   if (!isRevealed) {
-    return isFlagged ? <Image boardWidth={width} src="/images/sign.png" alt="warning sign" /> : '';
+    if (isFlagged) {
+      return <Image boardWidth={width} src="/images/sign.png" alt="warning sign" />;
+    }
+    return '';
+  }
+  if (wrongFlag) {
+    // if wrong flag it was either cell with 0 or n neighbours
+    return '👎';
   }
   if (isMine) {
+    if (exploded) {
+      return (
+        // eslint-disable-next-line jsx-a11y/accessible-emoji
+        <Explosion role="img" aria-label="exploded mine">
+          💥
+        </Explosion>
+      );
+    }
     return <Image boardWidth={width} src="/images/tnt.png" alt="bomb" />;
   }
   if (neighbour === 0) {
@@ -70,12 +96,14 @@ const Root = styled.div<RootProps>`
     isRevealed ? `url('/images/ground.png')` : `url('/images/grass.png')`};
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: hidden;
 `;
 
 type LabelProps = {
   neighbour: number;
   isMine: boolean;
   isFlagged: boolean;
+  wrongFlag: boolean;
 };
 
 const Label = styled.div<LabelProps>`
@@ -85,8 +113,8 @@ const Label = styled.div<LabelProps>`
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  background-color: ${({ isMine, isFlagged }) =>
-    isMine || isFlagged ? 'none' : 'rgba(0, 0, 0, 0.65)'};
+  background-color: ${({ isMine, isFlagged, wrongFlag }) =>
+    isMine || isFlagged || wrongFlag ? 'none' : 'rgba(0, 0, 0, 0.65)'};
   color: ${({ neighbour }) => getColor(neighbour)};
 `;
 
@@ -95,15 +123,17 @@ const Cell = ({
   isRevealed,
   isMine,
   isFlagged,
+  exploded,
+  wrongFlag,
   neighbour,
   onClick,
   onContextMenu,
 }: Props) => {
-  const content = getContent(width, isRevealed, isFlagged, isMine, neighbour);
+  const content = getContent(width, isRevealed, isFlagged, isMine, neighbour, exploded, wrongFlag);
   return (
     <Root onClick={onClick} onContextMenu={onContextMenu} isRevealed={isRevealed}>
       {content && (
-        <Label neighbour={neighbour} isMine={isMine} isFlagged={isFlagged}>
+        <Label neighbour={neighbour} isMine={isMine} isFlagged={isFlagged} wrongFlag={wrongFlag}>
           {content}
         </Label>
       )}

@@ -6,7 +6,14 @@ export const getRandomNumber = (dimension: number): number =>
   dimension === 0 ? 0 : Math.floor(Math.random() * 1000 + 1) % dimension;
 
 export const revealBoard = (data: CellData[][]): CellData[][] =>
-  data.map((row) => row.map((item) => ({ ...item, isRevealed: true, isFlagged: false })));
+  data.map((row) =>
+    row.map((item) => ({
+      ...item,
+      isRevealed: true,
+      isFlagged: false,
+      wrongFlag: !item.isMine && item.isFlagged,
+    })),
+  );
 
 export const initBoardData = (width: number, height: number): CellData[][] => {
   const boardData: CellData[][] = [];
@@ -142,6 +149,23 @@ export const revealEmpty = (
   x: number,
   y: number,
 ): CellData[][] => reveal(R.clone(data), width, height, x, y);
+
+export const flag = (data: CellData[][], px: number, py: number): CellData[][] =>
+  data.map((row, y) =>
+    row.map((cell, x) => (px === x && py === y ? { ...cell, isFlagged: !cell.isFlagged } : cell)),
+  );
+
+export const explode = (data: CellData[][], px: number, py: number): CellData[][] =>
+  data.map((row, y) =>
+    row.map((cell, x) => (px === x && py === y ? { ...cell, exploded: true } : cell)),
+  );
+
+export const revealMine = (data: CellData[][], px: number, py: number): CellData[][] =>
+  data.map((row, y) =>
+    row.map((cell, x) =>
+      px === x && py === y ? { ...cell, isFlagged: false, isRevealed: true } : cell,
+    ),
+  );
 
 export const getHidden = (data: CellData[][]) =>
   data.reduce((acc, row) => acc.concat(row.filter((item) => !item.isRevealed)), []);

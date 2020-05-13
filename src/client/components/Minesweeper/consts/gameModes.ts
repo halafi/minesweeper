@@ -1,7 +1,7 @@
 const GAME_MODES = [
   {
     name: 'Easy',
-    mines: 10,
+    mines: 1,
     width: 10,
     height: 10,
   },
@@ -32,9 +32,3 @@ const GAME_MODES = [
 ];
 
 export default GAME_MODES;
-
-// 10 x 10 / 10 = 10
-// 14 x 14 / 30 = 6,53
-// 16 x 16 / 60 = 4,27
-// 18 x 18 / 80 = 4,05
-// 20 x 20 / 120 = 3,33

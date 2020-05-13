@@ -1,5 +1,4 @@
 import React, { useReducer, useEffect, SyntheticEvent, Reducer } from 'react';
-import * as R from 'ramda';
 import styled from 'styled-components';
 import { useStopwatch } from 'react-timer-hook';
 import {
@@ -11,6 +10,9 @@ import {
   getHidden,
   getFlags,
   getMines,
+  flag,
+  revealMine,
+  explode,
 } from './services/utils';
 import Board from './components/Board/index';
 import Column from '../../primitives/Column';
@@ -21,6 +23,7 @@ import minesweeperReducer, {
   setBoardData,
   setMineCount,
   setDifficulty,
+  closeModal,
 } from './services/reducer';
 import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
@@ -142,15 +145,13 @@ const Minesweeper = () => {
       pause();
       explosionSound.play().then(() => {
         // game over
-        dispatch(setBoardData(revealBoard(boardData), 'lost'));
+        dispatch(setBoardData(explode(revealBoard(boardData), x, y), 'lost'));
       });
       return;
     }
     grassSound.load();
     grassSound.play();
-    let updatedData = R.clone(boardData);
-    updatedData[y][x].isFlagged = false;
-    updatedData[y][x].isRevealed = true;
+    let updatedData = revealMine(boardData, x, y);
     if (updatedData[y][x].isEmpty) {
       updatedData = revealEmpty(updatedData, width, height, x, y);
     }
@@ -168,30 +169,28 @@ const Minesweeper = () => {
 
   const handleContextMenu = (ev: SyntheticEvent, x: number, y: number) => {
     ev.preventDefault();
-    if (mineCount === 0 || boardData[y][x].isRevealed || gameState === 'ready') return;
-    const updatedData = R.clone(boardData);
-
-    if (updatedData[y][x].isFlagged) {
-      updatedData[y][x].isFlagged = false;
-    } else {
-      updatedData[y][x].isFlagged = true;
+    if (
+      (mineCount === 0 && !boardData[y][x].isFlagged) ||
+      boardData[y][x].isRevealed ||
+      gameState === 'ready'
+    ) {
+      return;
     }
-
+    const updatedData = flag(boardData, x, y);
     const flags = getFlags(updatedData);
     const newMineCount = mines - flags.length;
-
     if (newMineCount === 0) {
       if (JSON.stringify(getMines(updatedData)) === JSON.stringify(flags)) {
         pause();
         yuppieSound.play();
         updateStorage();
-        dispatch(setBoardData(revealBoard(updatedData), 'won'));
-        dispatch(setMineCount(mines - getFlags(updatedData).length));
+        dispatch(
+          setBoardData(revealBoard(updatedData), 'won', mines - getFlags(updatedData).length),
+        );
         return;
       }
     }
-    dispatch(setBoardData(updatedData));
-    dispatch(setMineCount(mines - getFlags(updatedData).length));
+    dispatch(setBoardData(updatedData, undefined, mines - getFlags(updatedData).length));
   };
 
   const RestartNode = (
@@ -238,7 +237,7 @@ const Minesweeper = () => {
         {RestartNode}
       </Menu>
       {gameState === 'lost' && (
-        <Modal>
+        <Modal onClose={() => dispatch(closeModal())}>
           <ModalContent>
             <CoverImage src="/images/elmosion.jpg" alt="explosion" />
             <ModalText>
@@ -253,7 +252,7 @@ const Minesweeper = () => {
         </Modal>
       )}
       {gameState === 'won' && (
-        <Modal>
+        <Modal onClose={() => dispatch(closeModal())}>
           <ModalContent>
             <CoverImage src="/images/win.jpg" alt="win" />
             <ModalText>

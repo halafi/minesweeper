@@ -9,6 +9,7 @@ const Root = styled.div`
   flex-wrap: wrap;
   height: 500px;
   border: 1px solid gray;
+  user-select: none;
   ${media.tablet} {
     height: 600px;
   }
@@ -45,6 +46,8 @@ const Board = ({ boardData, width, height, onCellClick, onContextMenu }: Props) 
               isMine={item.isMine}
               isRevealed={item.isRevealed}
               isFlagged={item.isFlagged}
+              exploded={item.exploded || false}
+              wrongFlag={item.wrongFlag || false}
               neighbour={item.neighbour}
               onClick={() => onCellClick(item.x, item.y)}
               onContextMenu={(ev: SyntheticEvent) => onContextMenu(ev, item.x, item.y)}

@@ -16,12 +16,13 @@ type GlobalStyleProps = {
   theme: Theme;
 };
 
+// FIXME: tmp hide overflow coz right image can stretch out of grid
 const GlobalStyle = createGlobalStyle`
   body {
-    user-select: none;
     color: ${({ theme }: GlobalStyleProps) => theme.colors.text};
     background-color: black;
     font-family: 'Work Sans', sans-serif;
+    overflow-x: hiden;
   }
 `;
 

@@ -6,4 +6,6 @@ export type CellData = {
   isRevealed: boolean;
   isEmpty: boolean;
   isFlagged: boolean;
+  exploded?: boolean;
+  wrongFlag?: boolean;
 };

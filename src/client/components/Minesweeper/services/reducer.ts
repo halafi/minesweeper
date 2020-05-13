@@ -2,7 +2,7 @@ import { CellData } from '../records/CellData';
 import { initBoardData } from './utils';
 import GAME_MODES from '../consts/gameModes';
 
-type GameState = 'ready' | 'started' | 'won' | 'lost';
+type GameState = 'ready' | 'started' | 'won' | 'lost' | 'spectate';
 
 // const SET_GAME_STATE = 'SET_GAME_STATE';
 const SET_MINE_COUNT = 'SET_MINE_COUNT';
@@ -10,6 +10,7 @@ const SET_DIFFICULTY = 'SET_DIFFICULTY';
 const RESET_GAME = 'RESET_GAME';
 const START_GAME = 'START_GAME';
 const SET_BOARD_DATA = 'SET_BOARD_DATA';
+const CLOSE_MODAL = 'CLOSE_MODAL';
 
 // type SetGameStateAction = {
 //   type: typeof SET_GAME_STATE;
@@ -46,6 +47,10 @@ type StartGameAction = {
   };
 };
 
+type CloseModalAction = {
+  type: typeof CLOSE_MODAL;
+};
+
 type SetBoardDataAction = {
   type: typeof SET_BOARD_DATA;
   payload: {
@@ -70,6 +75,10 @@ export const setDifficulty = (difficulty: number): SetDifficultyAction => ({
   payload: { difficulty },
 });
 
+export const closeModal = (): CloseModalAction => ({
+  type: CLOSE_MODAL,
+});
+
 export const setBoardData = (
   boardData: CellData[][],
   gameState?: GameState,
@@ -81,7 +90,12 @@ export const setBoardData = (
 
 export type MinesweeperActions =
   // | SetGameStateAction
-  SetMineCountAction | SetDifficultyAction | StartGameAction | ResetGameAction | SetBoardDataAction;
+  | SetMineCountAction
+  | SetDifficultyAction
+  | StartGameAction
+  | ResetGameAction
+  | SetBoardDataAction
+  | CloseModalAction;
 
 export type State = {
   difficulty: number;
@@ -92,8 +106,8 @@ export type State = {
 
 const minesweeperReducer = (oldState: State, action: MinesweeperActions): State => {
   switch (action.type) {
-    // case SET_GAME_STATE:
-    //   return { ...oldState, gameState: action.payload.gameState };
+    case CLOSE_MODAL:
+      return { ...oldState, gameState: 'spectate' };
     case SET_MINE_COUNT:
       return { ...oldState, mineCount: action.payload.mineCount };
     case SET_DIFFICULTY:
@@ -106,7 +120,10 @@ const minesweeperReducer = (oldState: State, action: MinesweeperActions): State 
         ...oldState,
         boardData: action.payload.boardData,
         gameState: action.payload.gameState || oldState.gameState,
-        mineCount: action.payload.mineCount || oldState.mineCount,
+        mineCount:
+          action.payload.mineCount || action.payload.mineCount === 0
+            ? action.payload.mineCount
+            : oldState.mineCount,
       };
     case RESET_GAME:
       return {
