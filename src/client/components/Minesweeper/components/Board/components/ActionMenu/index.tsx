@@ -1,18 +1,25 @@
 import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
+import media from '../../../../../../services/media/index';
 
 const Root = styled.div`
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  z-index: 2;
   width: 100%;
   background-color: #4b7430;
   height: 80px;
   display: flex;
   align-items: center;
-  justify-content: center;
-`;
-
-const Content = styled.div`
-  width: 300px;
-  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  ${media.tablet} {
+    max-width: 600px;
+  }
 `;
 
 const MenuItem = styled.div`
@@ -20,11 +27,11 @@ const MenuItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  margin: 0 20px;
 `;
 
 const Image = styled.img`
-  width: 28px;
+  width: 32px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -46,7 +53,7 @@ type Props = {
 const ActionMenu = ({ onDig, onFlag, enabled }: Props) => (
   <Root>
     {enabled && (
-      <Content>
+      <>
         <MenuItem>
           <ButtonWrapper onClick={onFlag}>
             <Image src="/images/sign.png" alt="warning sign" />
@@ -57,7 +64,7 @@ const ActionMenu = ({ onDig, onFlag, enabled }: Props) => (
             <Image src="/images/shovel.png" alt="dig" />
           </ButtonWrapper>
         </MenuItem>
-      </Content>
+      </>
     )}
   </Root>
 );

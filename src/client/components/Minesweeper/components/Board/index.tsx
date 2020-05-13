@@ -13,6 +13,7 @@ const Root = styled.div`
   height: 500px;
   user-select: none;
   overflow: hidden;
+  padding-bottom: 80px;
   ${media.tablet} {
     height: 600px;
   }
@@ -70,7 +71,7 @@ const Board = ({
     onDeselect();
   };
   return (
-    <Column>
+    <>
       <Root>
         {boardData.map((row) =>
           row.map((item) => (
@@ -96,7 +97,7 @@ const Board = ({
         )}
       </Root>
       <ActionMenu enabled={enabled} onDig={onDig} onFlag={onFlag} />
-    </Column>
+    </>
   );
 };
 
