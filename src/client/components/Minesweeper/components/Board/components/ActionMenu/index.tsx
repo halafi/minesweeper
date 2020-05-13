@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Root = styled.div`
   width: 100%;
   background-color: #4b7430;
-  height: 64px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,15 +21,10 @@ const MenuItem = styled.div`
   justify-content: center;
   align-items: center;
   width: 50%;
-  padding: 4px 0;
 `;
 
-const Shovel = styled.img`
-  width: 24px;
-`;
-
-const PlaceSign = styled.img`
-  width: 24px;
+const Image = styled.img`
+  width: 28px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -54,12 +49,12 @@ const ActionMenu = ({ onDig, onFlag, enabled }: Props) => (
       <Content>
         <MenuItem>
           <ButtonWrapper onClick={onFlag}>
-            <PlaceSign src="/images/sign.png" alt="warning sign" />
+            <Image src="/images/sign.png" alt="warning sign" />
           </ButtonWrapper>
         </MenuItem>
         <MenuItem>
           <ButtonWrapper onClick={onDig}>
-            <Shovel src="/images/shovel.png" alt="dig" />
+            <Image src="/images/shovel.png" alt="dig" />
           </ButtonWrapper>
         </MenuItem>
       </Content>

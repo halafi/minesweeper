@@ -71,7 +71,6 @@ const Board = ({
   };
   return (
     <Column>
-      <ActionMenu enabled={enabled} onDig={onDig} onFlag={onFlag} />
       <Root>
         {boardData.map((row) =>
           row.map((item) => (
