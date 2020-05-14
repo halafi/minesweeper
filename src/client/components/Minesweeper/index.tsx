@@ -143,10 +143,9 @@ const Minesweeper = () => {
       if (getHidden(revealedData).length === mines) {
         // insta win
         pause(); // stop timer
-        yuppieSound.play().then(() => {
-          updateStorage();
-          dispatch(setBoardData(revealBoard(revealedData), 'won'));
-        });
+        yuppieSound.play();
+        updateStorage();
+        dispatch(setBoardData(revealBoard(revealedData), 'won'));
       } else {
         dispatch(setBoardData(revealedData, 'started'));
       }
@@ -159,10 +158,9 @@ const Minesweeper = () => {
     if (boardData[cy][cx].isRevealed || boardData[cy][cx].isFlagged) return;
     if (boardData[cy][cx].isMine) {
       pause();
-      explosionSound.play().then(() => {
-        // game over
-        dispatch(setBoardData(explode(revealBoard(boardData), cx, cy), 'lost'));
-      });
+      explosionSound.play();
+      // game over
+      dispatch(setBoardData(explode(revealBoard(boardData), cx, cy), 'lost'));
       return;
     }
     grassSound.load();
@@ -173,10 +171,9 @@ const Minesweeper = () => {
     }
     if (getHidden(updatedData).length === mines) {
       pause();
-      yuppieSound.play().then(() => {
-        updateStorage();
-        dispatch(setBoardData(revealBoard(updatedData), 'won'));
-      });
+      yuppieSound.play();
+      updateStorage();
+      dispatch(setBoardData(revealBoard(updatedData), 'won'));
     } else {
       dispatch(setBoardData(updatedData));
     }
