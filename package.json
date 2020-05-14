@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm run prebuild && npm run webpack && cp -R public/* ./dist",
+    "build": "npm run prebuild && npm run webpack && cp -R public/* ./dist && cp -r public/.well-known ./dist",
     "webpack": "webpack --mode production --config config/webpack.prod.js --env.NODE_ENV=production",
     "start": "webpack-dev-server --mode development --hot --inline --config config/webpack.dev.js --open --env.NODE_ENV=development",
     "types": "tsc --noEmit",
