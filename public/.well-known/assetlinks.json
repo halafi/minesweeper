@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.filiphalas.minesweeper",
+    "sha256_cert_fingerprints":
+    ["D6:82:50:83:DC:68:CF:AB:BF:B6:A8:08:E5:32:ED:67:56:1A:3A:85:B8:64:E7:A6:38:07:C3:B8:70:C6:AF:40"]
+  }
+}]
