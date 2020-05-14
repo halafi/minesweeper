@@ -1,10 +1,10 @@
 import { CellData } from '../records/CellData';
 import { initBoardData } from './utils';
 import GAME_MODES from '../consts/gameModes';
+import { WindowType } from '../../../services/window';
 
 type GameState = 'ready' | 'started' | 'won' | 'lost' | 'spectate';
 
-// const SET_GAME_STATE = 'SET_GAME_STATE';
 const SET_MINE_COUNT = 'SET_MINE_COUNT';
 const SET_DIFFICULTY = 'SET_DIFFICULTY';
 const RESET_GAME = 'RESET_GAME';
@@ -12,13 +12,6 @@ const START_GAME = 'START_GAME';
 const SET_BOARD_DATA = 'SET_BOARD_DATA';
 const CLOSE_MODAL = 'CLOSE_MODAL';
 const SELECT_CELL = 'SELECT_CELL';
-
-// type SetGameStateAction = {
-//   type: typeof SET_GAME_STATE;
-//   payload: {
-//     gameState: GameState;
-//   };
-// };
 
 type SetMineCountAction = {
   type: typeof SET_MINE_COUNT;
@@ -38,6 +31,7 @@ type ResetGameAction = {
   type: typeof RESET_GAME;
   payload: {
     boardData: CellData[][];
+    windowType: WindowType;
   };
 };
 
@@ -69,9 +63,13 @@ type SelectCellAction = {
   };
 };
 
-export const resetGame = (width: number, height: number): ResetGameAction => ({
+export const resetGame = (
+  width: number,
+  height: number,
+  windowType: WindowType,
+): ResetGameAction => ({
   type: RESET_GAME,
-  payload: { boardData: initBoardData(width, height) },
+  payload: { boardData: initBoardData(width, height), windowType },
 });
 
 export const setMineCount = (mineCount: number): SetMineCountAction => ({
@@ -106,7 +104,6 @@ export const setBoardData = (
 });
 
 export type MinesweeperActions =
-  // | SetGameStateAction
   | SetMineCountAction
   | SetDifficultyAction
   | StartGameAction
@@ -151,7 +148,10 @@ const minesweeperReducer = (oldState: State, action: MinesweeperActions): State 
         x: null,
         y: null,
         gameState: 'ready',
-        mineCount: GAME_MODES[oldState.difficulty].mines,
+        mineCount:
+          action.payload.windowType === 'mobile'
+            ? GAME_MODES[oldState.difficulty].mines
+            : GAME_MODES[oldState.difficulty].minesDesktop,
         boardData: action.payload.boardData,
       };
     case SELECT_CELL:

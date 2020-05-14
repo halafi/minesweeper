@@ -29,6 +29,7 @@ import minesweeperReducer, {
 import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
 import Modal from '../Modal';
+import { getWindowType } from '../../services/window';
 
 const Restart = styled.span`
   font-size: 28px;
@@ -86,6 +87,8 @@ const grassSound = new Audio('/sounds/grass.wav');
 const explosionSound = new Audio('/sounds/explosion.wav');
 const yuppieSound = new Audio('/sounds/yuppie.wav');
 
+const windowType = getWindowType();
+
 const Minesweeper = () => {
   const [state, dispatch] = useReducer<Reducer<State, MinesweeperActions>>(minesweeperReducer, {
     difficulty: localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 1,
@@ -99,10 +102,15 @@ const Minesweeper = () => {
     autoStart: false,
   });
   const { difficulty, boardData, gameState, mineCount, x, y } = state;
-  const { width, height, mines } = GAME_MODES[difficulty];
+  const width =
+    windowType === 'mobile' ? GAME_MODES[difficulty].width : GAME_MODES[difficulty].widthDesktop;
+  const height =
+    windowType === 'mobile' ? GAME_MODES[difficulty].height : GAME_MODES[difficulty].heightDesktop;
+  const mines =
+    windowType === 'mobile' ? GAME_MODES[difficulty].mines : GAME_MODES[difficulty].minesDesktop;
 
   const restart = () => {
-    dispatch(resetGame(width, height));
+    dispatch(resetGame(width, height, windowType));
     reset();
   };
 
@@ -284,7 +292,10 @@ const Minesweeper = () => {
         boardData={boardData}
         width={width}
         height={height}
-        onCellClick={handleCellClick}
+        onCellClick={
+          gameState === 'ready' || windowType !== 'desktop' ? handleCellClick : handleReveal
+        }
+        showActionMenu={windowType !== 'desktop'}
         onContextMenu={handleContextMenu}
         selectedX={x}
         selectedY={y}

@@ -2,21 +2,19 @@ import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import Cell from './components/Cell';
 import { CellData } from '../../records/CellData';
-import media from '../../../../services/media';
 import ActionMenu from './components/ActionMenu';
 import Column from '../../../../primitives/Column';
+import Row from '../../../../primitives/Row';
 
-const Root = styled.div`
-  display: flex;
+const Root = styled(Column)`
   position: relative;
-  flex-wrap: wrap;
-  height: 500px;
   user-select: none;
   overflow: hidden;
   padding-bottom: 80px;
-  ${media.tablet} {
-    height: 600px;
-  }
+`;
+
+const BoardRow = styled(Row)`
+  justify-content: center;
 `;
 
 type CellWrapperProps = {
@@ -25,16 +23,18 @@ type CellWrapperProps = {
   selected: boolean;
 };
 
-// height: ${({ boardHeight }) => `${500 / boardHeight}px`};
 const CellWrapper = styled.div<CellWrapperProps>`
+  position: relative;
   display: flex;
   box-sizing: border-box;
   width: ${({ boardWidth }) => `${(1 / boardWidth) * 100}%`};
-  height: ${({ boardHeight }) => `${500 / boardHeight}px`};
-  font-size: ${({ boardWidth }) => `${300 / boardWidth}px`};
+  max-width: 48px;
+  font-size: ${({ boardWidth }) => `min(${300 / boardWidth}px, 28px)`};
   border: ${({ selected }) => (selected ? '2px solid red' : 'none')};
-  ${media.tablet} {
-    height: ${({ boardHeight }) => `${600 / boardHeight}px`};
+  ::after {
+    content: '';
+    display: block;
+    padding-top: min(100%, 48px);
   }
 `;
 
@@ -44,6 +44,7 @@ type Props = {
   height: number;
   selectedX: number | null;
   selectedY: number | null;
+  showActionMenu: boolean;
   onCellClick: (x: number, y: number) => void;
   onContextMenu: (ev: any, x: number, y: number) => void;
   onDeselect: () => void;
@@ -54,6 +55,7 @@ const Board = ({
   boardData,
   width,
   height,
+  showActionMenu,
   onCellClick,
   onContextMenu,
   onDeselect,
@@ -73,30 +75,33 @@ const Board = ({
   return (
     <>
       <Root>
-        {boardData.map((row) =>
-          row.map((item) => (
-            <CellWrapper
-              key={item.x + item.y * row.length}
-              boardWidth={width}
-              boardHeight={height}
-              selected={selectedX === item.x && selectedY === item.y}
-            >
-              <Cell
-                width={width}
-                isMine={item.isMine}
-                isRevealed={item.isRevealed}
-                isFlagged={item.isFlagged}
-                exploded={item.exploded || false}
-                wrongFlag={item.wrongFlag || false}
-                neighbour={item.neighbour}
-                onClick={() => onCellClick(item.x, item.y)}
-                onContextMenu={(ev: SyntheticEvent) => onContextMenu(ev, item.x, item.y)}
-              />
-            </CellWrapper>
-          )),
-        )}
+        {boardData.map((row, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <BoardRow key={i}>
+            {row.map((item) => (
+              <CellWrapper
+                key={item.x + item.y * row.length}
+                boardWidth={width}
+                boardHeight={height}
+                selected={selectedX === item.x && selectedY === item.y}
+              >
+                <Cell
+                  width={width}
+                  isMine={item.isMine}
+                  isRevealed={item.isRevealed}
+                  isFlagged={item.isFlagged}
+                  exploded={item.exploded || false}
+                  wrongFlag={item.wrongFlag || false}
+                  neighbour={item.neighbour}
+                  onClick={() => onCellClick(item.x, item.y)}
+                  onContextMenu={(ev: SyntheticEvent) => onContextMenu(ev, item.x, item.y)}
+                />
+              </CellWrapper>
+            ))}
+          </BoardRow>
+        ))}
       </Root>
-      <ActionMenu enabled={enabled} onDig={onDig} onFlag={onFlag} />
+      {showActionMenu && <ActionMenu enabled={enabled} onDig={onDig} onFlag={onFlag} />}
     </>
   );
 };

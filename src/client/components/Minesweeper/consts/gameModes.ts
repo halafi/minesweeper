@@ -1,33 +1,58 @@
 const GAME_MODES = [
   {
     name: 'Easy',
-    mines: 10,
-    width: 10,
-    height: 10,
+    mines: 12,
+    width: 8,
+    height: 15,
+    // 10
+    minesDesktop: 10,
+    widthDesktop: 10,
+    heightDesktop: 10,
+    //  10
   },
   {
     name: 'Normal',
-    mines: 30,
-    width: 14,
-    height: 14,
+    mines: 33,
+    width: 12,
+    height: 18,
+    // 6.55
+    minesDesktop: 30,
+    widthDesktop: 14,
+    heightDesktop: 14,
+    // 6.53
   },
   {
     name: 'Hard',
-    mines: 50,
-    width: 16, // 14 x 25
-    height: 16,
+    mines: 55,
+    width: 14,
+    height: 20,
+    // 5.09
+    minesDesktop: 50,
+    widthDesktop: 16, // 14 x 25
+    heightDesktop: 16,
+    // 5.12
   },
   {
     name: 'Very Hard',
-    mines: 70,
-    width: 18,
-    height: 18,
+    mines: 80,
+    width: 16,
+    height: 23,
+    // 4.60
+    minesDesktop: 70,
+    widthDesktop: 18,
+    heightDesktop: 18,
+    // 4.63
   },
   {
     name: 'Nightmare',
-    mines: 99,
-    width: 20,
-    height: 20,
+    mines: 103,
+    width: 16,
+    height: 26,
+    // 4.04
+    minesDesktop: 99,
+    widthDesktop: 20,
+    heightDesktop: 20,
+    // 4.04
   },
 ];
 
