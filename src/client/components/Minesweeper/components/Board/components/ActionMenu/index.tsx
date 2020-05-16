@@ -10,7 +10,7 @@ const Root = styled.div`
   right: 0;
   z-index: 2;
   width: 100%;
-  background-color: #4b7430;
+  background-color: rgba(75, 116, 48, 0.8);
   height: 80px;
   display: flex;
   align-items: center;

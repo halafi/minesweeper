@@ -43,7 +43,7 @@ const CloseIcon = styled.span`
 
 const Modal = ({ onClose, children }: Props) => (
   <Portal>
-    <Overlay onClick={onClose} />
+    <Overlay />
     <Container>
       {onClose && (
         // eslint-disable-next-line jsx-a11y/accessible-emoji

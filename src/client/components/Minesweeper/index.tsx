@@ -16,13 +16,11 @@ import {
 } from './services/utils';
 import Board from './components/Board/index';
 import Column from '../../primitives/Column';
-import Row from '../../primitives/Row';
 import media from '../../services/media/index';
 import minesweeperReducer, {
   resetGame,
   setBoardData,
   setMineCount,
-  setDifficulty,
   closeModal,
   selectCell,
 } from './services/reducer';
@@ -30,14 +28,11 @@ import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
 import Modal from '../Modal';
 import { getWindowType } from '../../services/window';
+import Menu from './components/Menu';
 
 const Restart = styled.span`
   font-size: 28px;
   cursor: pointer;
-`;
-const Image = styled.img`
-  width: 22px;
-  height: 22px;
 `;
 
 const CoverImage = styled.img`
@@ -61,28 +56,6 @@ const ModalText = styled.span`
   margin: 12px 0;
 `;
 
-const Menu = styled(Row)`
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-  padding: 12px 8px;
-  font-size: 24px;
-  font-weight: 700;
-  select {
-    font-size: 18px;
-  }
-  #sign,
-  #clock {
-    margin-right: 8px;
-  }
-  #clock {
-    margin-left: 32px;
-  }
-  ${media.tablet} {
-    padding: 12px 0;
-  }
-`;
-
 const grassSound = new Audio('/sounds/grass.wav');
 const explosionSound = new Audio('/sounds/explosion.wav');
 const yuppieSound = new Audio('/sounds/yuppie.wav');
@@ -91,7 +64,7 @@ const windowType = getWindowType();
 
 const Minesweeper = () => {
   const [state, dispatch] = useReducer<Reducer<State, MinesweeperActions>>(minesweeperReducer, {
-    difficulty: localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 1,
+    difficulty: localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 0,
     boardData: [],
     gameState: 'ready',
     mineCount: 0,
@@ -224,31 +197,14 @@ const Minesweeper = () => {
 
   return (
     <Column>
-      <Menu>
-        <select
-          value={difficulty}
-          onChange={(e) => {
-            localStorage.setItem('difficulty', e.target.value);
-            dispatch(setDifficulty(Number(e.target.value)));
-          }}
-        >
-          {GAME_MODES.map((mode, i) => (
-            <option key={mode.name} value={i}>
-              {mode.name}
-            </option>
-          ))}
-        </select>
-        <div>
-          <Image id="sign" src="/images/sign.png" alt="warning sign" />
-          {mineCount}
-          <span id="clock" role="img" aria-label="clock">
-            ⏰
-          </span>
-          {time}
-        </div>
-        {/* eslint-disable-next-line */}
-        {RestartNode}
-      </Menu>
+      <Menu
+        gameState={gameState}
+        dispatch={dispatch}
+        mineCount={mineCount}
+        time={time}
+        difficulty={difficulty}
+        restart={restart}
+      />
       {gameState === 'lost' && (
         <Modal onClose={() => dispatch(closeModal())}>
           <ModalContent>

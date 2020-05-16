@@ -3,7 +3,7 @@ import { initBoardData } from './utils';
 import GAME_MODES from '../consts/gameModes';
 import { WindowType } from '../../../services/window';
 
-type GameState = 'ready' | 'started' | 'won' | 'lost' | 'spectate';
+export type GameState = 'ready' | 'started' | 'won' | 'lost' | 'spectate';
 
 const SET_MINE_COUNT = 'SET_MINE_COUNT';
 const SET_DIFFICULTY = 'SET_DIFFICULTY';
