@@ -1,11 +1,14 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import ScrollLock from 'react-scrolllock';
 
 import Portal from './Portal';
 import media from '../../services/media';
 
 type Props = {
   children: ReactNode;
+  closeOnClickOut?: boolean;
+  closeButton?: boolean;
   onClose?: () => void;
 };
 
@@ -41,19 +44,28 @@ const CloseIcon = styled.span`
   right: 0;
 `;
 
-const Modal = ({ onClose, children }: Props) => (
+const Modal = ({ onClose, children, closeOnClickOut, closeButton }: Props) => (
   <Portal>
-    <Overlay />
-    <Container>
-      {onClose && (
-        // eslint-disable-next-line jsx-a11y/accessible-emoji
-        <CloseIcon role="img" aria-label="time" onClick={onClose}>
-          ❌
-        </CloseIcon>
-      )}
-      {children}
-    </Container>
+    <ScrollLock>
+      <div>
+        <Overlay onClick={onClose && closeOnClickOut ? onClose : undefined} />
+        <Container>
+          {onClose && closeButton && (
+            // eslint-disable-next-line jsx-a11y/accessible-emoji
+            <CloseIcon role="img" aria-label="time" onClick={onClose}>
+              ❌
+            </CloseIcon>
+          )}
+          {children}
+        </Container>
+      </div>
+    </ScrollLock>
   </Portal>
 );
+
+Modal.defaultProps = {
+  closeOnClickOut: false,
+  closeButton: true,
+};
 
 export default Modal;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import * as R from 'ramda';
 import styled from 'styled-components';
 import Row from '../../../../primitives/Row';
 import media from '../../../../services/media/index';
@@ -31,12 +30,6 @@ const Root = styled(Row)`
     font-size: 24px;
     padding: 12px 0;
   }
-`;
-
-const Mines = styled(Row)`
-  justify-content: center;
-  font-size: 14px;
-  margin-top: 8px;
 `;
 
 const Image = styled.img`
@@ -152,18 +145,17 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
     <Root>
       <SelectButton onClick={() => setOpen(true)}>{GAME_MODES[difficulty].name}</SelectButton>
       {open && (
-        <Modal>
+        <Modal onClose={() => setOpen(false)} closeOnClickOut closeButton={false}>
           <ModalContent>
             {gameModes.map((mode, i) => {
               const disabled = gameModes[i - 1] && !gameModes[i - 1].bestTime;
               const won = Boolean(mode.bestTime || mode.bestTime === 0);
               const selected = i === difficulty;
               return (
-                <CenterRow>
+                <CenterRow key={mode.name}>
                   <ModeButton
                     role="button"
                     tabIndex={0}
-                    key={mode.name}
                     onClick={!disabled ? () => setDiff(i) : undefined}
                     won={won}
                     disabled={disabled}
