@@ -34,30 +34,6 @@ export const initBoardData = (width: number, height: number): CellData[][] => {
   return boardData;
 };
 
-// do this on first click, avoid planting at initial location
-export const plantMines = (
-  data: CellData[][],
-  randomizer: (dimension: number) => number,
-  width: number,
-  height: number,
-  mines: number,
-  startX: number,
-  startY: number,
-): CellData[][] => {
-  let minesPlanted = 0;
-  const output = R.clone(data);
-  output[startY][startX].isRevealed = true;
-  while (minesPlanted < mines) {
-    const randomx = randomizer(width);
-    const randomy = randomizer(height);
-    if (!output[randomy][randomx].isMine && !output[randomy][randomx].isRevealed) {
-      output[randomy][randomx].isMine = true;
-      minesPlanted += 1;
-    }
-  }
-  return output;
-};
-
 // looks for neighbouring cells and returns them
 export const traverseBoard = (
   x: number,
@@ -102,23 +78,6 @@ export const traverseBoard = (
   return el;
 };
 
-export const computeNeighbours = (data: CellData[][], width: number, height: number) => {
-  return data.map((column, y) =>
-    column.map((cell, x) => {
-      if (cell.isMine !== true) {
-        const area = traverseBoard(x, y, data, width, height);
-        const mines = area.reduce((acc, value) => (value.isMine ? acc + 1 : acc), 0);
-        return {
-          ...cell,
-          isEmpty: mines === 0,
-          neighbour: mines,
-        };
-      }
-      return cell;
-    }),
-  );
-};
-
 // mutates
 const reveal = (
   data: CellData[][],
@@ -149,6 +108,51 @@ export const revealEmpty = (
   x: number,
   y: number,
 ): CellData[][] => reveal(R.clone(data), width, height, x, y);
+
+// do this on first click, avoid planting at initial location
+export const plantMines = (
+  data: CellData[][],
+  randomizer: (dimension: number) => number,
+  width: number,
+  height: number,
+  mines: number,
+  startX: number,
+  startY: number,
+): CellData[][] => {
+  let minesPlanted = 0;
+  const output = R.clone(data);
+  const startSurroundingArea = traverseBoard(startX, startY, output, width, height);
+  output[startY][startX].isRevealed = true;
+  while (minesPlanted < mines) {
+    const randomx = randomizer(width);
+    const randomy = randomizer(height);
+    const inSafeArea = startSurroundingArea.some(
+      (cell) => cell.x === randomx && cell.y === randomy,
+    );
+    if (!inSafeArea && !output[randomy][randomx].isMine && !output[randomy][randomx].isRevealed) {
+      output[randomy][randomx].isMine = true;
+      minesPlanted += 1;
+    }
+  }
+  return output;
+};
+
+export const computeNeighbours = (data: CellData[][], width: number, height: number) => {
+  return data.map((column, y) =>
+    column.map((cell, x) => {
+      if (cell.isMine !== true) {
+        const area = traverseBoard(x, y, data, width, height);
+        const mines = area.reduce((acc, value) => (value.isMine ? acc + 1 : acc), 0);
+        return {
+          ...cell,
+          isEmpty: mines === 0,
+          neighbour: mines,
+        };
+      }
+      return cell;
+    }),
+  );
+};
 
 export const flag = (data: CellData[][], px: number, py: number): CellData[][] =>
   data.map((row, y) =>
