@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Column from '../primitives/Column';
@@ -83,24 +83,6 @@ const Copy = styled.div`
   }
 `;
 
-const AuthInfo = styled.div`
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.5;
-  ${media.tablet} {
-    font-size: 14px;
-  }
-`;
-
-const Email = styled.span`
-  color: purple;
-`;
-
-const Github = styled.a`
-  color: white;
-  text-decoration: none;
-`;
-
 const MainMenu = () => (
   <Container>
     <Main>
@@ -112,12 +94,7 @@ const MainMenu = () => (
         </Menu>
       </CenteredColumn>
       <Column>
-        <Copy>
-          &copy; 2020{' '}
-          <Github href="https://github.com/halafi" target="_blank" rel="noopener noreferrer">
-            Fulup Studios
-          </Github>
-        </Copy>
+        <Copy>&copy; 2020 Fulup Studios</Copy>
       </Column>
     </Main>
   </Container>
