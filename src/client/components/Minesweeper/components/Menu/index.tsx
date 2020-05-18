@@ -147,10 +147,14 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
     setOpen(false);
   };
 
-  const gameModes = GAME_MODES.map((mode, i) => ({
-    ...mode,
-    bestTime: Number(localStorage.getItem(`besttime-${i}`)) || null,
-  }));
+  const gameModes = GAME_MODES.map((mode, i) => {
+    const storageItem = localStorage.getItem(`besttime-${i}`);
+    const bestTime = storageItem === '0' || storageItem ? Number(storageItem) : null;
+    return {
+      ...mode,
+      bestTime,
+    };
+  });
 
   return (
     <Root>
@@ -165,9 +169,8 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
         <Modal onClose={() => setOpen(false)} closeOnClickOut closeButton={false}>
           <ModalContent>
             {gameModes.map((mode, i) => {
-              console.log(gameModes);
-              const disabled = gameModes[i - 1] && !gameModes[i - 1].bestTime;
-              console.log(disabled);
+              const disabled =
+                gameModes[i - 1] && !gameModes[i - 1].bestTime && gameModes[i - 1].bestTime !== 0;
               const won = Boolean(mode.bestTime || mode.bestTime === 0);
               const selected = i === difficulty;
               return (
@@ -184,7 +187,11 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
                       <Name>{mode.name}</Name>
                       <BestTime>
                         {/* eslint-disable-next-line */}
-                        {mode.bestTime ? `🏆 ${mode.bestTime}` : disabled ? '🚫' : '⚔️'}
+                        {mode.bestTime || mode.bestTime === 0
+                          ? `🏆 ${mode.bestTime}`
+                          : disabled
+                          ? '🚫'
+                          : '⚔️'}
                       </BestTime>
                     </Column>
                   </ModeButton>
