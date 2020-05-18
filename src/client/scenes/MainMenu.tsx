@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import Column from '../primitives/Column';
 import media from '../services/media/index';
 
