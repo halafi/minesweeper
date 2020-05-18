@@ -165,7 +165,9 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
         <Modal onClose={() => setOpen(false)} closeOnClickOut closeButton={false}>
           <ModalContent>
             {gameModes.map((mode, i) => {
+              console.log(gameModes);
               const disabled = gameModes[i - 1] && !gameModes[i - 1].bestTime;
+              console.log(disabled);
               const won = Boolean(mode.bestTime || mode.bestTime === 0);
               const selected = i === difficulty;
               return (
