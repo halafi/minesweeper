@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.filiphalas.minesweeper"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 3
+        versionName "3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+            hostName: "minesweeper2k20.web.app",
+            defaultUrl: "https://minesweeper2k20.web.app",
+            launcherName: "Minesweeper",
+            assetStatements: '[{ "relation": ["delegate_permission/common.handle_all_urls"], ' +
+                    '"target": {"namespace": "web", "site": "https://minesweeper2k20.web.app"}}]'
+        ]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.github.GoogleChrome:custom-tabs-client:a0f7418972'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
