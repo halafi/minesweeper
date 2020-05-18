@@ -29,6 +29,7 @@ import GAME_MODES from './consts/gameModes';
 import Modal from '../Modal';
 import { getWindowType } from '../../services/window';
 import Menu from './components/Menu';
+import WinScreen from './components/WinScreen/index';
 
 const Restart = styled.span`
   font-size: 28px;
@@ -222,23 +223,7 @@ const Minesweeper = () => {
       )}
       {gameState === 'won' && (
         <Modal onClose={() => dispatch(closeModal())}>
-          <ModalContent>
-            <CoverImage src="/images/win.jpg" alt="win" />
-            <ModalText>
-              <span role="img" aria-label="trophy">
-                🏆
-              </span>{' '}
-              Best time ({GAME_MODES[difficulty].name}):{' '}
-              {localStorage.getItem(`besttime-${difficulty}`) || '---'}
-            </ModalText>
-            <ModalText>
-              <span role="img" aria-label="time">
-                ⏰
-              </span>
-              Current run: {time}
-            </ModalText>
-            {RestartNode}
-          </ModalContent>
+          <WinScreen time={time} gameState={gameState} difficulty={difficulty} restart={restart} />
         </Modal>
       )}
       <Board

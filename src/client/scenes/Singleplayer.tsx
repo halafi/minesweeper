@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { hot } from 'react-hot-loader';
 import Minesweeper from '../components/Minesweeper';
 import Column from '../primitives/Column';
 import media from '../services/media/index';
@@ -18,7 +17,7 @@ const Main = styled.main`
   }
 `;
 
-const Root = () => {
+const Singleplayer = () => {
   return (
     <Container>
       <Main>
@@ -28,4 +27,4 @@ const Root = () => {
   );
 };
 
-export default hot(module)(Root);
+export default Singleplayer;

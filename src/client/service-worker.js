@@ -29,30 +29,30 @@ workbox.routing.registerRoute(
 );
 
 // Cache the Google Fonts stylesheets with a stale-while-revalidate strategy.
-workbox.routing.registerRoute(
-  ({ url }) => url.origin === 'https://fonts.googleapis.com',
-  new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'google-fonts-stylesheets',
-  }),
-);
+// workbox.routing.registerRoute(
+//   ({ url }) => url.origin === 'https://fonts.googleapis.com',
+//   new workbox.strategies.StaleWhileRevalidate({
+//     cacheName: 'google-fonts-stylesheets',
+//   }),
+// );
 
 // Cache the underlying font files with a cache-first strategy for 1 year.
-workbox.routing.registerRoute(
-  ({ url }) => url.origin === 'https://fonts.gstatic.com',
-  new workbox.strategies.CacheFirst({
-    cacheName: 'google-fonts-webfonts',
-    plugins: [
-      new workbox.cacheableResponse.CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
-      new workbox.expiration.ExpirationPlugin(EXPIRATION),
-    ],
-  }),
-);
+// workbox.routing.registerRoute(
+//   ({ url }) => url.origin === 'https://fonts.gstatic.com',
+//   new workbox.strategies.CacheFirst({
+//     cacheName: 'google-fonts-webfonts',
+//     plugins: [
+//       new workbox.cacheableResponse.CacheableResponsePlugin({
+//         statuses: [0, 200],
+//       }),
+//       new workbox.expiration.ExpirationPlugin(EXPIRATION),
+//     ],
+//   }),
+// );
 
 // images, favicon
 workbox.routing.registerRoute(
-  /\.(?:png|gif|jpg|jpeg|svg|ico)/,
+  /\.(?:png|gif|jpg|jpeg|svg|ico|ttf)/,
   new workbox.strategies.CacheFirst({
     cacheName: 'images',
     plugins: [EXPIRATION],

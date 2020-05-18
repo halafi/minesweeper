@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Row from '../../../../primitives/Row';
 import media from '../../../../services/media/index';
 import SelectButton from '../../../ButtonSelect';
@@ -8,6 +9,16 @@ import { setDifficulty } from '../../services/reducer';
 import type { MinesweeperActions, GameState } from '../../services/reducer';
 import Modal from '../../../Modal';
 import Column from '../../../../primitives/Column';
+
+const GoBackLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  padding-right: 8px;
+`;
+
+const RowCentered = styled(Row)`
+  align-items: center;
+`;
 
 const Root = styled(Row)`
   justify-content: space-between;
@@ -143,7 +154,13 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
 
   return (
     <Root>
-      <SelectButton onClick={() => setOpen(true)}>{GAME_MODES[difficulty].name}</SelectButton>
+      <RowCentered>
+        <GoBackLink to="/">
+          {/* eslint-disable-next-line */}
+          <Restart>🔙</Restart>
+        </GoBackLink>
+        <SelectButton onClick={() => setOpen(true)}>{GAME_MODES[difficulty].name}</SelectButton>
+      </RowCentered>
       {open && (
         <Modal onClose={() => setOpen(false)} closeOnClickOut closeButton={false}>
           <ModalContent>

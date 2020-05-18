@@ -2,9 +2,12 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
+import { BrowserRouter } from 'react-router-dom';
 import { themeDefault } from './records/Theme';
 import type { Theme } from './records/Theme';
-import Root from './scenes/Root';
+import Routes from './Routes';
+// @ts-ignore
+import PressStartBold from '../../assets/prstartk.ttf';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
   navigator.serviceWorker.register('/sw.js');
@@ -16,12 +19,16 @@ type GlobalStyleProps = {
   theme: Theme;
 };
 
-// FIXME: tmp hide overflow coz right image can stretch out of grid
 const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: PressStartBold;
+    src: url(${PressStartBold});
+    font-weight: 700;
+  }
   body {
     color: ${({ theme }: GlobalStyleProps) => theme.colors.text};
     background-color: black;
-    font-family: 'Work Sans', sans-serif;
+    font-family: sans-serif;
   }
 `;
 
@@ -29,11 +36,11 @@ if (container) {
   render(
     <React.StrictMode>
       <ThemeProvider theme={themeDefault}>
-        <>
+        <BrowserRouter>
           <Normalize />
           <GlobalStyle />
-          <Root />
-        </>
+          <Routes />
+        </BrowserRouter>
       </ThemeProvider>
     </React.StrictMode>,
     container,
