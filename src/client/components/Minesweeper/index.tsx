@@ -23,6 +23,8 @@ import minesweeperReducer, {
   setMineCount,
   closeModal,
   selectCell,
+  setSafety,
+  setMenuOrder,
 } from './services/reducer';
 import type { State, MinesweeperActions } from './services/reducer';
 import GAME_MODES from './consts/gameModes';
@@ -67,6 +69,8 @@ const Minesweeper = () => {
   const [state, dispatch] = useReducer<Reducer<State, MinesweeperActions>>(minesweeperReducer, {
     difficulty: localStorage.getItem('difficulty') ? Number(localStorage.getItem('difficulty')) : 0,
     boardData: [],
+    leftHandedMenu: false,
+    safety: true,
     gameState: 'ready',
     mineCount: 0,
     x: null,
@@ -75,7 +79,7 @@ const Minesweeper = () => {
   const { seconds, minutes, hours, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
-  const { difficulty, boardData, gameState, mineCount, x, y } = state;
+  const { difficulty, boardData, gameState, mineCount, x, y, safety, leftHandedMenu } = state;
   const width =
     windowType === 'mobile' ? GAME_MODES[difficulty].width : GAME_MODES[difficulty].widthDesktop;
   const height =
@@ -231,9 +235,14 @@ const Minesweeper = () => {
         width={width}
         height={height}
         onCellClick={
-          gameState === 'ready' || windowType !== 'desktop' ? handleCellClick : handleReveal
+          gameState === 'ready' || (windowType !== 'desktop' && safety)
+            ? handleCellClick
+            : handleReveal
         }
-        showActionMenu={windowType !== 'desktop'}
+        showActionMenu={windowType !== 'desktop' && safety}
+        disableSafety={() => dispatch(setSafety(false))}
+        toggleMenuOrder={() => dispatch(setMenuOrder(!leftHandedMenu))}
+        leftHandedMenu={leftHandedMenu}
         onContextMenu={handleContextMenu}
         selectedX={x}
         selectedY={y}

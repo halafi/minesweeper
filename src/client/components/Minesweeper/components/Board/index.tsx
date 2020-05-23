@@ -45,10 +45,13 @@ type Props = {
   selectedX: number | null;
   selectedY: number | null;
   showActionMenu: boolean;
+  leftHandedMenu: boolean,
   onCellClick: (x: number, y: number) => void;
   onContextMenu: (ev: any, x: number, y: number) => void;
   onDeselect: () => void;
   onReveal: (x: number, y: number) => void;
+  disableSafety: () => void;
+  toggleMenuOrder: () => void;
 };
 
 const Board = ({
@@ -56,12 +59,15 @@ const Board = ({
   width,
   height,
   showActionMenu,
+  leftHandedMenu,
   onCellClick,
   onContextMenu,
   onDeselect,
   onReveal,
   selectedX,
   selectedY,
+  disableSafety,
+  toggleMenuOrder,
 }: Props) => {
   const enabled = Boolean((selectedX || selectedX === 0) && (selectedY || selectedY === 0));
   const onDig = () => {
@@ -101,7 +107,16 @@ const Board = ({
           </BoardRow>
         ))}
       </Root>
-      {showActionMenu && <ActionMenu enabled={enabled} onDig={onDig} onFlag={onFlag} />}
+      {showActionMenu && (
+        <ActionMenu
+          enabled={enabled}
+          onDig={onDig}
+          onFlag={onFlag}
+          onDisableSafety={disableSafety}
+          onToggleMenu={toggleMenuOrder}
+          leftHandedMenu={leftHandedMenu}
+        />
+      )}
     </>
   );
 };

@@ -56,9 +56,17 @@ const Image = styled.img`
   }
 `;
 
-const Restart = styled.span`
-  font-size: 28px;
+const LargeIcon = styled.img`
   cursor: pointer;
+  display: flex;
+  height: auto;
+  width: 26px;
+  ${media.smallMobile} {
+    width: 28px;
+  }
+  ${media.tablet} {
+    width: 32px;
+  }
 `;
 
 const ModalContent = styled(Column)`
@@ -95,7 +103,7 @@ const getTextColor = (won: boolean, disabled: boolean) => {
 };
 
 const ModeButton = styled(Row)<ModeProps>`
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  cursor: pointer;
   justify-content: center;
   color: ${({ won, disabled }) => getTextColor(won, disabled)};
   background-color: ${({ won, disabled }) => getColor(won, disabled)};
@@ -160,8 +168,7 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
     <Root>
       <RowCentered>
         <GoBackLink to="/">
-          {/* eslint-disable-next-line */}
-          <Restart>🔙</Restart>
+          <LargeIcon id="back" src="/images/back.png" alt="go back" />
         </GoBackLink>
         <SelectButton onClick={() => setOpen(true)}>{GAME_MODES[difficulty].name}</SelectButton>
       </RowCentered>
@@ -178,7 +185,7 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
                   <ModeButton
                     role="button"
                     tabIndex={0}
-                    onClick={!disabled ? () => setDiff(i) : undefined}
+                    onClick={() => setDiff(i)}
                     won={won}
                     disabled={disabled}
                     selected={selected}
@@ -187,11 +194,7 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
                       <Name>{mode.name}</Name>
                       <BestTime>
                         {/* eslint-disable-next-line */}
-                        {mode.bestTime || mode.bestTime === 0
-                          ? `🏆 ${mode.bestTime}`
-                          : disabled
-                          ? '🚫'
-                          : '⚔️'}
+                        {mode.bestTime || mode.bestTime === 0 ? `🏆 ${mode.bestTime}` : '⚔️'}
                       </BestTime>
                     </Column>
                   </ModeButton>
@@ -210,24 +213,19 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
       <div>
         <Image id="sign" src="/images/sign.png" alt="warning sign" />
         {mineCount}
-        <span id="clock" role="img" aria-label="clock">
-          ⏰
-        </span>
+        <Image id="clock" src="/images/alarm_clock.png" alt="alarm clock" />
         {time}
       </div>
-      {/* eslint-disable-next-line */}
-      <Restart
-        role="img"
-        aria-label="refresh"
+      <LargeIcon
+        id="refresh"
+        src="/images/arrows_counterclockwise.png"
+        alt="restart"
         onClick={() => {
           if (gameState !== 'ready') {
             restart();
           }
         }}
-        tabIndex={0}
-      >
-        🔄
-      </Restart>
+      />
     </Root>
   );
 };

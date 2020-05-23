@@ -28,21 +28,19 @@ const Select = styled(Row)`
   }
 `;
 
-const Icon = styled.div`
+const Icon = styled.img`
   position: absolute;
-  top: 5px;
+  top: 4px;
   right: 4px;
+  width: 18px;
+  height: 18px;
 `;
 
 const SelectButton = ({ children, onClick }: Props) => (
   <Row>
     <Select onClick={onClick}>
       {children}
-      <Icon>
-        <span role="img" aria-label="arrow up-down">
-          ↕️
-        </span>
-      </Icon>
+      <Icon src="/images/arrow_up_down.png" alt="arrow up-down" />
     </Select>
   </Row>
 );

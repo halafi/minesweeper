@@ -12,6 +12,8 @@ const START_GAME = 'START_GAME';
 const SET_BOARD_DATA = 'SET_BOARD_DATA';
 const CLOSE_MODAL = 'CLOSE_MODAL';
 const SELECT_CELL = 'SELECT_CELL';
+const SET_SAFETY = 'SET_SAFETY';
+const SET_MENU_ORDER = 'SET_MENU_ORDER';
 
 type SetMineCountAction = {
   type: typeof SET_MINE_COUNT;
@@ -63,6 +65,20 @@ type SelectCellAction = {
   };
 };
 
+type SetSafetyAction = {
+  type: typeof SET_SAFETY;
+  payload: {
+    safety: boolean;
+  };
+};
+
+type SetMenuOrderAction = {
+  type: typeof SET_MENU_ORDER;
+  payload: {
+    leftHanded: boolean;
+  };
+};
+
 export const resetGame = (
   width: number,
   height: number,
@@ -84,6 +100,20 @@ export const setDifficulty = (difficulty: number): SetDifficultyAction => ({
 
 export const closeModal = (): CloseModalAction => ({
   type: CLOSE_MODAL,
+});
+
+export const setSafety = (value: boolean): SetSafetyAction => ({
+  type: SET_SAFETY,
+  payload: {
+    safety: value,
+  },
+});
+
+export const setMenuOrder = (leftHanded: boolean): SetMenuOrderAction => ({
+  type: SET_MENU_ORDER,
+  payload: {
+    leftHanded,
+  },
 });
 
 export const selectCell = (x: number | null, y: number | null): SelectCellAction => ({
@@ -110,9 +140,13 @@ export type MinesweeperActions =
   | ResetGameAction
   | SetBoardDataAction
   | CloseModalAction
-  | SelectCellAction;
+  | SelectCellAction
+  | SetSafetyAction
+  | SetMenuOrderAction;
 
 export type State = {
+  safety: boolean;
+  leftHandedMenu: boolean;
   x: number | null;
   y: number | null;
   difficulty: number;
@@ -123,6 +157,10 @@ export type State = {
 
 const minesweeperReducer = (oldState: State, action: MinesweeperActions): State => {
   switch (action.type) {
+    case SET_SAFETY:
+      return { ...oldState, safety: action.payload.safety, x: null, y: null };
+    case SET_MENU_ORDER:
+      return { ...oldState, leftHandedMenu: action.payload.leftHanded };
     case CLOSE_MODAL:
       return { ...oldState, gameState: 'spectate' };
     case SET_MINE_COUNT:
