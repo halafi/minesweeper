@@ -38,12 +38,6 @@ const Image = styled.img<ImageProps>`
   width: ${({ boardWidth }) => 250 / boardWidth}px;
 `;
 
-const Explosion = styled.div`
-  position: relative;
-  z-index: 1;
-  font-size: 2.5em;
-`;
-
 const getContent = (
   width: number,
   isRevealed: boolean,
@@ -61,16 +55,11 @@ const getContent = (
   }
   if (wrongFlag) {
     // if wrong flag it was either cell with 0 or n neighbours
-    return '👎';
+    return <Image boardWidth={width} src="/images/thumb_down.png" alt="thumb down" />;
   }
   if (isMine) {
     if (exploded) {
-      return (
-        // eslint-disable-next-line jsx-a11y/accessible-emoji
-        <Explosion role="img" aria-label="exploded mine">
-          💥
-        </Explosion>
-      );
+      return <Image boardWidth={width} alt="exploded mine" src="/images/boom.png" />;
     }
     return <Image boardWidth={width} src="/images/tnt.png" alt="bomb" />;
   }
