@@ -1,5 +1,4 @@
 import React, { useReducer, useEffect, SyntheticEvent, Reducer } from 'react';
-import styled from 'styled-components';
 import { useStopwatch } from 'react-timer-hook';
 import {
   computeNeighbours,
@@ -16,7 +15,6 @@ import {
 } from './services/utils';
 import Board from './components/Board/index';
 import Column from '../../primitives/Column';
-import media from '../../services/media/index';
 import minesweeperReducer, {
   resetGame,
   setBoardData,
@@ -32,32 +30,7 @@ import Modal from '../Modal';
 import { getWindowType } from '../../services/window';
 import Menu from './components/Menu';
 import WinScreen from './components/WinScreen/index';
-
-const Restart = styled.span`
-  font-size: 28px;
-  cursor: pointer;
-`;
-
-const CoverImage = styled.img`
-  width: 300px;
-  min-height: 200px;
-  ${media.tablet} {
-    width: 350px;
-  }
-`;
-
-const ModalContent = styled(Column)`
-  color: white;
-  padding: 8px;
-  align-items: center;
-  font-size: 18px;
-`;
-
-const ModalText = styled.span`
-  white-space: nowrap;
-  text-align: center;
-  margin: 12px 0;
-`;
+import FailScreen from './components/FailScreen/index';
 
 const grassSound = new Audio('/sounds/grass.wav');
 const explosionSound = new Audio('/sounds/explosion.wav');
@@ -184,22 +157,6 @@ const Minesweeper = () => {
     dispatch(setBoardData(updatedData, undefined, mines - getFlags(updatedData).length));
   };
 
-  const RestartNode = (
-    // eslint-disable-next-line
-    <Restart
-      role="img"
-      aria-label="refresh"
-      onClick={() => {
-        if (gameState !== 'ready') {
-          restart();
-        }
-      }}
-      tabIndex={0}
-    >
-      🔄
-    </Restart>
-  );
-
   return (
     <Column>
       <Menu
@@ -212,17 +169,7 @@ const Minesweeper = () => {
       />
       {gameState === 'lost' && (
         <Modal onClose={() => dispatch(closeModal())}>
-          <ModalContent>
-            <CoverImage src="/images/elmosion.jpg" alt="explosion" />
-            <ModalText>
-              <span role="img" aria-label="trophy">
-                🏆
-              </span>{' '}
-              Best time ({GAME_MODES[difficulty].name}):{' '}
-              {localStorage.getItem(`besttime-${difficulty}`) || '---'}
-            </ModalText>
-            {RestartNode}
-          </ModalContent>
+          <FailScreen gameState={gameState} difficulty={difficulty} restart={restart} />
         </Modal>
       )}
       {gameState === 'won' && (

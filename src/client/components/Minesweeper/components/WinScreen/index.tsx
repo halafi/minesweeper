@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Column from '../../../../primitives/Column';
-import GAME_MODES from '../../consts/gameModes';
 import type { GameState } from '../../services/reducer';
 import Row from '../../../../primitives/Row';
 
@@ -25,11 +24,6 @@ const SubmitText = styled.div`
   padding-bottom: 8px;
 `;
 
-const Restart = styled.span`
-  font-size: 28px;
-  cursor: pointer;
-`;
-
 const CenterRow = styled(Row)`
   margin: 8px 0;
   justify-content: center;
@@ -50,6 +44,15 @@ const Button = styled.button`
   padding: 4px;
   border: 1px solid black;
   border-radius: 5px;
+`;
+
+const LargeIcon = styled.img`
+  cursor: pointer;
+  width: 32px;
+`;
+
+const Image = styled.img`
+  width: 22px;
 `;
 
 type Props = {
@@ -93,17 +96,11 @@ const WinScreen = ({ difficulty, time, gameState, restart }: Props) => {
       {/* <CoverImage src="/images/win.jpg" alt="win" /> */}
       <h2>You Won</h2>
       <ModalText>
-        <span role="img" aria-label="trophy">
-          🏆
-        </span>{' '}
-        Best time ({GAME_MODES[difficulty].name}):{' '}
+        <Image id="clock" src="/images/trophy.png" alt="trophy" /> Personal best:{' '}
         {localStorage.getItem(`besttime-${difficulty}`) || '---'}
       </ModalText>
       <ModalText>
-        <span role="img" aria-label="time">
-          ⏰
-        </span>
-        Current run: {time}
+        <Image id="clock" src="/images/alarm_clock.png" alt="alarm clock" /> Current run: {time}
       </ModalText>
       {!submitted && (
         <ModalText>
@@ -132,7 +129,7 @@ const WinScreen = ({ difficulty, time, gameState, restart }: Props) => {
             </AlignEndColumn>
             <CenterRow>
               <Button type="submit" disabled={submitting}>
-                Confirm
+                {submitting ? 'Uploading' : 'Confirm'}
               </Button>
               <Button type="button" disabled={submitting} onClick={() => setSubmitted(true)}>
                 Cancel
@@ -141,19 +138,17 @@ const WinScreen = ({ difficulty, time, gameState, restart }: Props) => {
           </form>
         </ModalText>
       )}
-      {/* eslint-disable-next-line */}
-      <Restart
-        role="img"
-        aria-label="refresh"
-        onClick={() => {
-          if (gameState !== 'ready') {
-            restart();
-          }
-        }}
-        tabIndex={0}
-      >
-        🔄
-      </Restart>
+      {!submitting && (
+        <LargeIcon
+          src="/images/arrows_counterclockwise.png"
+          alt="restart"
+          onClick={() => {
+            if (gameState !== 'ready') {
+              restart();
+            }
+          }}
+        />
+      )}
     </ModalContent>
   );
 };

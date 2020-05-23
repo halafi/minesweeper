@@ -45,7 +45,7 @@ type Props = {
   selectedX: number | null;
   selectedY: number | null;
   showActionMenu: boolean;
-  leftHandedMenu: boolean,
+  leftHandedMenu: boolean;
   onCellClick: (x: number, y: number) => void;
   onContextMenu: (ev: any, x: number, y: number) => void;
   onDeselect: () => void;

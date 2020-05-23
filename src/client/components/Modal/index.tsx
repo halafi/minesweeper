@@ -37,11 +37,12 @@ const Container = styled.div`
   }
 `;
 
-const CloseIcon = styled.span`
+const CloseIcon = styled.img`
   cursor: pointer;
   position: absolute;
   top: 0;
   right: 0;
+  width: 20px;
 `;
 
 const Modal = ({ onClose, children, closeOnClickOut, closeButton }: Props) => (
@@ -51,10 +52,7 @@ const Modal = ({ onClose, children, closeOnClickOut, closeButton }: Props) => (
         <Overlay onClick={onClose && closeOnClickOut ? onClose : undefined} />
         <Container>
           {onClose && closeButton && (
-            // eslint-disable-next-line jsx-a11y/accessible-emoji
-            <CloseIcon role="img" aria-label="time" onClick={onClose}>
-              ❌
-            </CloseIcon>
+            <CloseIcon src="/images/x.png" alt="close" onClick={onClose} />
           )}
           {children}
         </Container>
