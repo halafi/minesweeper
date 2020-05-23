@@ -20,6 +20,11 @@ const RowCentered = styled(Row)`
   align-items: center;
 `;
 
+const Center = styled(Row)`
+  align-items: center;
+  justify-content: center;
+`;
+
 const Root = styled(Row)`
   justify-content: space-between;
   align-items: center;
@@ -41,6 +46,10 @@ const Root = styled(Row)`
     font-size: 24px;
     padding: 12px 0;
   }
+`;
+
+const DifficultySymbol = styled.img`
+  width: 22px;
 `;
 
 const Image = styled.img`
@@ -194,7 +203,14 @@ const Menu = ({ difficulty, mineCount, time, gameState, dispatch, restart }: Pro
                       <Name>{mode.name}</Name>
                       <BestTime>
                         {/* eslint-disable-next-line */}
-                        {mode.bestTime || mode.bestTime === 0 ? `🏆 ${mode.bestTime}` : '⚔️'}
+                        {mode.bestTime || mode.bestTime === 0 ? (
+                          <Center>
+                            <DifficultySymbol src="/images/trophy.png" alt="trophy" />{' '}
+                            {mode.bestTime}
+                          </Center>
+                        ) : (
+                          <DifficultySymbol src="/images/crossed_swords.png" alt="crossed swords" />
+                        )}
                       </BestTime>
                     </Column>
                   </ModeButton>

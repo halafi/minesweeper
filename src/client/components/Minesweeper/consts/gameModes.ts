@@ -54,17 +54,17 @@ const GAME_MODES = [
     heightDesktop: 20,
     // 4.04
   },
-  {
-    name: 'Torment',
-    mines: 124,
-    width: 16,
-    height: 30,
-    // 3.87
-    minesDesktop: 125,
-    widthDesktop: 22,
-    heightDesktop: 22,
-    // 3.87
-  },
+  // {
+  //   name: 'Torment',
+  //   mines: 124,
+  //   width: 16,
+  //   height: 30,
+  //   // 3.87
+  //   minesDesktop: 125,
+  //   widthDesktop: 22,
+  //   heightDesktop: 22,
+  //   // 3.87
+  // },
 ];
 
 export default GAME_MODES;
