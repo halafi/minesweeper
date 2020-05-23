@@ -123,7 +123,9 @@ export const plantMines = (
   const output = R.clone(data);
   const startSurroundingArea = traverseBoard(startX, startY, output, width, height);
   output[startY][startX].isRevealed = true;
-  while (minesPlanted < mines) {
+  const cellsWithoutMines = width * height - startSurroundingArea.length - 1;
+  const maxMines = mines > cellsWithoutMines ? cellsWithoutMines : mines;
+  while (minesPlanted < maxMines) {
     const randomx = randomizer(width);
     const randomy = randomizer(height);
     const inSafeArea = startSurroundingArea.some(

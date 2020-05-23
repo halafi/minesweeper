@@ -100,54 +100,65 @@ describe('#utils', () => {
     const output = [
       [
         dataHelper(0, 0, false, true),
-        dataHelper(1, 0, true),
+        dataHelper(1, 0, false),
         dataHelper(2, 0, true),
         dataHelper(3, 0, true),
       ],
       [
-        dataHelper(0, 1, true),
-        dataHelper(1, 1, true),
+        dataHelper(0, 1, false),
+        dataHelper(1, 1, false),
         dataHelper(2, 1, false),
         dataHelper(3, 1, false),
       ],
       [
         dataHelper(0, 2, false),
         dataHelper(1, 2, false),
-        dataHelper(2, 2, false),
+        dataHelper(2, 2, true),
         dataHelper(3, 2, false),
       ],
       [
         dataHelper(0, 3, false),
         dataHelper(1, 3, false),
         dataHelper(2, 3, false),
-        dataHelper(3, 3, false),
+        dataHelper(3, 3, true),
       ],
     ];
     const randomizerMockFn = jest
       .fn(() => 0)
+      // [1, 0] => cant plant
       .mockImplementationOnce(() => 1)
       .mockImplementationOnce(() => 0)
+      // [2, 0] => can plant
       .mockImplementationOnce(() => 2)
       .mockImplementationOnce(() => 0)
+      // [3, 0] => can plant
       .mockImplementationOnce(() => 3)
       .mockImplementationOnce(() => 0)
+      // [0, 1] => cant plant
       .mockImplementationOnce(() => 0)
       .mockImplementationOnce(() => 1)
+      // [1, 1] => cant plant
       .mockImplementationOnce(() => 1)
-      .mockImplementationOnce(() => 1);
-    expect(plantMines(plantMinesInput, randomizerMockFn, 4, 4, 5, 0, 0)).toEqual(output);
+      .mockImplementationOnce(() => 1)
+      // [2, 2] => can plant
+      .mockImplementationOnce(() => 2)
+      .mockImplementationOnce(() => 2)
+      // [3, 3] => can plant
+      .mockImplementationOnce(() => 3)
+      .mockImplementationOnce(() => 3);
+    expect(plantMines(plantMinesInput, randomizerMockFn, 4, 4, 4, 0, 0)).toEqual(output);
   });
   test('plantMines maximum mines', () => {
     const output = [
       [
         dataHelper(0, 0, false, true),
-        dataHelper(1, 0, true),
+        dataHelper(1, 0, false),
         dataHelper(2, 0, true),
         dataHelper(3, 0, true),
       ],
       [
-        dataHelper(0, 1, true),
-        dataHelper(1, 1, true),
+        dataHelper(0, 1, false),
+        dataHelper(1, 1, false),
         dataHelper(2, 1, true),
         dataHelper(3, 1, true),
       ],
@@ -164,6 +175,7 @@ describe('#utils', () => {
         dataHelper(3, 3, true),
       ],
     ];
+    // will plant only 4 * 4 - 4 mines (initial click radius) = 12 mines
     expect(plantMines(plantMinesInput, getRandomNumber, 4, 4, 15, 0, 0)).toEqual(output);
   });
   test('traverseBoard', () => {
